@@ -1,28 +1,18 @@
+sudo: required
+addons:
+  chrome: stable
+
 language: node_js
 node_js:
-  - "9"
-dist: trusty
-sudo: false
+  - "8"
 
 branches:
   only:
-  - master
+    - master
 
-cache:
-  directories:
-    - node_modules
-
-install:
-  - npm install -g yarn
+before_script:
+  - npm install -g @angular/cli
 
 script:
-  - yarn lint
-  - yarn build --base-href /WersaPlayer/
-  - mv dist/WersaPlayer/index.html dist/WersaPlayer/404.html
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  local_dir: dist/WersaPlayer
-  on:
-    branch: master
+  - ng build --prod --aot
+  - ng test
