@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Find Music
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<app-search-box (loading)="loading = $event" (results)="updateResults($event)"></app-search-box>
+
+<ion-content>
+  <ion-list>
+    <app-search-result *ngFor="let result of results" [result]="result"></app-search-result>
+  </ion-list>
+</ion-content>

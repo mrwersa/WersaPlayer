@@ -1,5 +1,7 @@
 {
   "name": "WersaPlyer",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
