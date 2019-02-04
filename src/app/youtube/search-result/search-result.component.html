@@ -1,16 +1,19 @@
-<ion-list>
-  <ion-item-sliding>
-    <ion-item>
-      <ion-thumbnail slot="start">
-        <img src="{{result.thumbnailUrl}}">
-      </ion-thumbnail>
-      <ion-label>
-        <h2>{{result.title}}</h2>
-        <p>{{result.description}}</p>
-      </ion-label>
-    </ion-item>
-    <ion-item-options side="end">
-      <ion-item-option (click)="downloadVideo(result.id)">Download</ion-item-option>
-    </ion-item-options>
-  </ion-item-sliding>
-</ion-list>
+<ion-card>
+  <img src="{{ result.thumbnailUrl }}" (click) = 'playVideo(result.videoId)'/>
+
+  <ion-card-header>
+    <ion-card-title>{{ result.title }}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>{{ result.description }}</ion-card-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="downloadVideo(result.id)" expand="block">
+            <ion-icon slot="start" name="download"></ion-icon>
+          Download
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>
