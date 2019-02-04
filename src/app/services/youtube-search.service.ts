@@ -15,6 +15,8 @@ export class YoutubeSearchService {
   constructor(private http: HttpClient) { }
 
   nextPage(nextPageToken: string): Observable<VideoDetail[]> {
+    console.log(nextPageToken);
+    console.log('ssssssssssssssssssssss');
     const params: string = [
       `key=${environment.YOUTUBE_API_KEY}`,
       `part=snippet`,
@@ -26,15 +28,13 @@ export class YoutubeSearchService {
     const queryUrl = `${environment.YOUTUBE_API_URL}?${params}`;
 
     return this.http.get(queryUrl).pipe(map(response => {
-      let nextPageToken = response['nextPageToken'];
-
       return response['items'].map(item => {
         return new VideoDetail({
           id: item.id.videoId,
           title: item.snippet.title,
           description: item.snippet.description,
           thumbnailUrl: item.snippet.thumbnails.high.url,
-          nextPageToken: nextPageToken
+          nextPageToken:  response['nextPageToken']
         });
       });
     }));
@@ -48,20 +48,18 @@ export class YoutubeSearchService {
       `part=snippet`,
       `type=video`,
       `maxResults=10`
-    ].join('&')
+    ].join('&');
 
     const queryUrl = `${environment.YOUTUBE_API_URL}?${params}`;
 
     return this.http.get(queryUrl).pipe(map(response => {
-      let nextPageToken = response['nextPageToken'];
-
       return response['items'].map(item => {
         return new VideoDetail({
           id: item.id.videoId,
           title: item.snippet.title,
           description: item.snippet.description,
           thumbnailUrl: item.snippet.thumbnails.high.url,
-          nextPageToken: nextPageToken
+          nextPageToken: response['nextPageToken']
         });
       });
     }));
