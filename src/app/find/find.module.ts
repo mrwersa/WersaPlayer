@@ -4,8 +4,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FindPage } from './find.page';
+
 import { SearchBoxComponent } from '../youtube/search-box/search-box.component';
 import { SearchResultComponent } from '../youtube/search-result/search-result.component';
+import { SearchResultListComponent } from '../youtube/search-result-list/search-result-list.component';
 
 @NgModule({
   imports: [
@@ -17,6 +19,8 @@ import { SearchResultComponent } from '../youtube/search-result/search-result.co
   declarations: [
     FindPage,
     SearchBoxComponent,
-    SearchResultComponent]
+    SearchResultComponent,
+    SearchResultListComponent
+  ]
 })
-export class FindPageModule {}
+export class FindPageModule { }

@@ -6,10 +6,8 @@
   </ion-toolbar>
 </ion-header>
 
-<app-search-box (loading)="loading = $event" (results)="updateResults($event)"></app-search-box>
+<app-search-box (results)="updateResults($event)"></app-search-box>
 
 <ion-content>
-  <ion-list>
-    <app-search-result *ngFor="let result of results" [result]="result"></app-search-result>
-  </ion-list>
+  <app-search-result-list [results]="results"></app-search-result-list>
 </ion-content>

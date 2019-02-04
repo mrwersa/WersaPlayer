@@ -13,19 +13,15 @@ import { YoutubeDownloadService } from '../../services/youtube-download.service'
 export class SearchResultComponent implements OnInit {
   @Input() result: VideoDetail;
 
-  constructor(private youtube: YoutubeVideoPlayer, private youtubeDownloadService: YoutubeDownloadService) { }
+  constructor(private youtubeDownloadService: YoutubeDownloadService) { }
 
   ngOnInit() {
     this.youtubeDownloadService.downloads.subscribe(msg => {
       if (msg.type == 'download-finished') {
-        
+
       }
       console.log(msg);
     })
-  }
-
-  playVideo(videoId) {
-    this.youtube.openVideo(videoId)
   }
 
   downloadVideo(videoId) {

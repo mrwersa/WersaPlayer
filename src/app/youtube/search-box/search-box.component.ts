@@ -1,6 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
-import { fromEvent } from 'rxjs';
-import { map, filter, debounceTime, tap, switchAll } from 'rxjs/operators';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 import { VideoDetail } from '../video-detail.model';
 import { YoutubeSearchService } from '../../services/youtube-search.service';
@@ -12,52 +10,23 @@ import { YoutubeSearchService } from '../../services/youtube-search.service';
 })
 export class SearchBoxComponent implements OnInit {
 
-  @Output() loading = new EventEmitter<boolean>();
   @Output() results = new EventEmitter<VideoDetail[]>();
 
-  constructor(private youtube: YoutubeSearchService, private el: ElementRef) { }
+  constructor(private youtube: YoutubeSearchService) { }
 
   ngOnInit() {
-    // // convert the `keyup` event into an observable stream
-    // fromEvent(this.el.nativeElement, 'keyup').pipe(
-    //   map((e: any) => e.target.value), // extract the value of the input
-    //   filter(text => text.length > 1), // filter out if empty
-    //   debounceTime(300), // only once every 500ms
-    //   tap(() => this.loading.emit(true)), // enable loading
-    //   map((query: string) => this.youtube.search(query)), // search
-    //   switchAll()) // produces values only from the most recent inner sequence ignoring previous streams
-    //   .subscribe(  // act on the return of the search
-    //     _results => {
-    //       this.loading.emit(false);
-    //       this.results.emit(_results);
-    //     },
-    //     err => {
-    //       console.log(err);
-    //       this.loading.emit(false);
-    //     },
-    //     () => {
-    //       this.loading.emit(false);
-    //     }
-    //   );
   }
 
   search(query) {
     if (query.length < 1) {
-      this.loading.emit(false);
       this.results.emit([]);
     } else {
-
-      this.youtube.search(query).subscribe(  // act on the return of the search
+      this.youtube.search(query).subscribe(
         _results => {
-          this.loading.emit(false);
           this.results.emit(_results);
         },
         err => {
           console.log(err);
-          this.loading.emit(false);
-        },
-        () => {
-          this.loading.emit(false);
         }
       );
     }
