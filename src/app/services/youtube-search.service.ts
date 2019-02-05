@@ -15,8 +15,6 @@ export class YoutubeSearchService {
   constructor(private http: HttpClient) { }
 
   nextPage(nextPageToken: string): Observable<VideoDetail[]> {
-    console.log(nextPageToken);
-    console.log('ssssssssssssssssssssss');
     const params: string = [
       `key=${environment.YOUTUBE_API_KEY}`,
       `part=snippet`,

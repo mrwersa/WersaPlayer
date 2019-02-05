@@ -1,12 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Find Music
-    </ion-title>
+    <app-search-box (results)="updateResults($event)"></app-search-box>
   </ion-toolbar>
 </ion-header>
-
-<app-search-box (results)="updateResults($event)"></app-search-box>
 
 <ion-content>
   <app-search-result-list [results]="results"></app-search-result-list>

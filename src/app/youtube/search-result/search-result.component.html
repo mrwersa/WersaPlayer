@@ -1,16 +1,17 @@
 <ion-card>
-  <img src="{{ result.thumbnailUrl }}" (click) = 'playVideo(result.videoId)'/>
+  <img src="{{result.thumbnailUrl}}" (click)='playVideo(result.videoId)' />
 
   <ion-card-header>
-    <ion-card-title>{{ result.title }}</ion-card-title>
+    <ion-card-title>{{result.title}}</ion-card-title>
   </ion-card-header>
 
-  <ion-card-content>{{ result.description }}</ion-card-content>
+
   <ion-grid>
     <ion-row>
       <ion-col>
         <ion-button (click)="downloadVideo(result.id)" expand="block">
-            <ion-icon slot="start" name="download"></ion-icon>
+          <!-- <ion-spinner name="circles"></ion-spinner> -->
+          <ion-icon slot="start" name="download"></ion-icon>          
           Download
         </ion-button>
       </ion-col>
