@@ -9,7 +9,11 @@ export class MusicFileService {
   constructor() { }
 
 
-  public download(videoId: string) {
+  public downloadTrack(videoId: string) {
+
+  }
+
+  public getAllTracks() {
 
   }
 }
