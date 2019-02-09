@@ -32,7 +32,7 @@ export class YoutubeSearchService {
           title: item.snippet.title,
           description: item.snippet.description,
           thumbnailUrl: item.snippet.thumbnails.high.url,
-          nextPageToken:  response['nextPageToken']
+          nextPageToken: response['nextPageToken']
         });
       });
     }));

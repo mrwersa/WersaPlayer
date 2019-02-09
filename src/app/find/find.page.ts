@@ -14,5 +14,4 @@ export class FindPage {
   updateResults(results: VideoDetail[]): void {
     this.results = results;
   }
-
 }

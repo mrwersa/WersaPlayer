@@ -1,5 +1,4 @@
 progress-bar {
-
     .progress-outer {
         width: 100%;
         padding: 1px;
@@ -7,7 +6,6 @@ progress-bar {
         background-color: lightblue;
         color: #fff;
     }
-
     .progress-inner {
         min-width: 1%;
         white-space: nowrap;
@@ -15,5 +13,4 @@ progress-bar {
         padding: 2px;
         background-color: darkblue;
     }
-
 }
