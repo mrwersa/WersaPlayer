@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
-import { VideoDetail } from '../video-detail.model';
+import { VideoDetail } from '../../models/video-detail.model';
 import { YoutubeSearchService } from '../../services/youtube-search.service';
 
 @Component({

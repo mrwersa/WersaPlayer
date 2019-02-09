@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { VideoDetail } from '../youtube/video-detail.model';
+import { VideoDetail } from '../models/video-detail.model';
 
 
 @Component({

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import { Observable } from 'rxjs';
-import { VideoDetail } from '../youtube/video-detail.model';
+import { VideoDetail } from '../models/video-detail.model';
 
 import { environment } from '../../environments/environment';
 

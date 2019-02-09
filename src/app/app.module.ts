@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { HttpClientModule } from '@angular/common/http';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
 import { WebsocketService } from './services/websocket.service';
@@ -24,7 +25,8 @@ import { YoutubeDownloadService } from './services/youtube-download.service';
         BrowserModule,
         IonicModule.forRoot(),
         AppRoutingModule,
-        HttpClientModule
+        HttpClientModule,
+        IonicStorageModule.forRoot()
     ],
     providers: [
         StatusBar,
