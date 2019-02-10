@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 
+import { TrackDetail } from './../../models/track-detail.model';
 import { VideoDetail } from '../../models/video-detail.model';
 import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
 import { YoutubeDownloadService } from '../../services/youtube-download.service';
@@ -54,7 +55,9 @@ export class SearchResultComponent implements OnInit {
             if (this.result && msg.data.id === this.result.id) {
                 if (msg.type === 'download-finished') {
                     this.status = DownloadStatus.Downloaded;
-                    // this.musicFileService.addTrack(msg.data.id);
+                    this.musicFileService.downloadTrack(msg.data.id);
+                    console.log(msg.data);
+                    this.musicFileService.addTrackMetadata(new TrackDetail(msg.data.id));
                 } else if (msg.type === 'download-error') {
                     this.status = DownloadStatus.Error;
                     this.presentError(msg.data.id);

@@ -18,7 +18,7 @@ export class SearchBoxComponent implements OnInit {
   }
 
   search(query) {
-    if (query.length < 1) {
+    if (query.length < 3) {
       this.results.emit([]);
     } else {
       this.youtube.search(query).subscribe(

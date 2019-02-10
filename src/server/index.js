@@ -23,12 +23,18 @@ io.on('connection', (socket) => {
         downloading.push(videoId);
 
         YD.on("finished", function(err, data) {
-            delete downloading.videoId;
+            var index = downloading.indexOf(videoId);
+            if (index > -1) {
+                downloading.splice(index, 1);
+            }
             socket.emit('download-finished', { id: videoId, data: data });
         });
 
         YD.on("error", function(error) {
-            delete downloading.videoId;
+            var index = downloading.indexOf(videoId);
+            if (index > -1) {
+                downloading.splice(index, 1);
+            }
             socket.emit('download-error', { id: videoId, data: error });
         });
 
