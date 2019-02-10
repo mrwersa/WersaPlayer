@@ -1,20 +1,40 @@
-<ion-card>
-  <img src="{{result.thumbnailUrl}}" (click)='playVideo(this.result.videoId)' />
+<ion-card color="light">
+    <img src="{{result.thumbnailUrl}}" (click)='playVideo(this.result.id)' />
 
-  <ion-card-header>
-    <ion-card-title>{{result.title}}</ion-card-title>
-  </ion-card-header>
+    <ion-card-header>
+        <ion-card-title>{{result.title}}</ion-card-title>
+    </ion-card-header>
 
+    <ion-card-content>
+        {{result.description}}
+    </ion-card-content>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-button (click)="downloadVideo(result.id)" expand="block" [disabled]="status !== downloadStaus.NotDownloaded">
-          <ion-spinner name="circles" [hidden]="status !== downloadStaus.Downloading"></ion-spinner>
-          <ion-icon slot="start" name="download"></ion-icon>
-          Download
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+
+                <div [ngSwitch]="this.status">
+                    <div *ngSwitchCase="downloadStatus.Downloaded">
+                        <ion-button size="small" color="medium" (click)="downloadVideo(result.id)" expand="block" disabled="true">
+                            <ion-icon #elseBlock slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+                            Downloaded
+                        </ion-button>
+                    </div>
+                    <div *ngSwitchCase="downloadStatus.Downloading">
+                        <ion-button size="small" color="primary" (click)="downloadVideo(result.id)" expand="block" disabled="true">
+                            <ion-spinner #thenBlock name="circles"></ion-spinner>
+                            Downloading...
+                        </ion-button>
+                    </div>
+                    <div *ngSwitchDefault>
+                        <ion-button size="small" color="primary" (click)="downloadVideo(result.id)" expand="block">
+                            <ion-icon #elseBlock slot="icon-only" name="md-download"></ion-icon>
+                            Download
+                        </ion-button>
+                    </div>
+                </div>
+
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-card>

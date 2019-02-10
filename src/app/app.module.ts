@@ -13,6 +13,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
+
+import { MusicFileService } from './services/music-file.service';
 import { WebsocketService } from './services/websocket.service';
 import { YoutubeDownloadService } from './services/youtube-download.service';
 
@@ -34,6 +36,7 @@ import { YoutubeDownloadService } from './services/youtube-download.service';
         YoutubeVideoPlayer,
         WebsocketService,
         YoutubeDownloadService,
+        MusicFileService,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent]

@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { VideoDetail } from "../../models/video-detail.model";
-import { YoutubeVideoPlayer } from "@ionic-native/youtube-video-player/ngx";
+import { Component, OnInit, Input } from '@angular/core';
+import { VideoDetail } from '../../models/video-detail.model';
+import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
 
-import { YoutubeDownloadService } from "../../services/youtube-download.service";
+import { YoutubeDownloadService } from '../../services/youtube-download.service';
+import { MusicFileService } from '../../services/music-file.service';
 
-enum DownloadStaus {
+enum DownloadStatus {
     NotDownloaded,
     Downloading,
     Downloaded,
@@ -12,37 +13,60 @@ enum DownloadStaus {
 }
 
 @Component({
-    selector: "app-search-result",
-    templateUrl: "./search-result.component.html",
-    styleUrls: ["./search-result.component.scss"]
+    selector: 'app-search-result',
+    templateUrl: './search-result.component.html',
+    styleUrls: ['./search-result.component.scss']
 })
 export class SearchResultComponent implements OnInit {
-    @Input() result: VideoDetail;
-    downloadStaus = DownloadStaus;
-    status: DownloadStaus;
+    private _result: VideoDetail;
+    downloadStatus = DownloadStatus;
+    status: DownloadStatus;
 
     constructor(
         private youtubeVideoPlayer: YoutubeVideoPlayer,
-        private youtubeDownloadService: YoutubeDownloadService
+        private youtubeDownloadService: YoutubeDownloadService,
+        private musicFileService: MusicFileService,
     ) {
-        this.status = DownloadStaus.NotDownloaded;
+        this.status = DownloadStatus.NotDownloaded;
+    }
+
+    get result(): VideoDetail {
+        return this._result;
+    }
+
+    @Input()
+    set result(_result: VideoDetail) {
+        if (_result) {
+            this._result = _result;
+            this.musicFileService.getTrackMetaData(this._result.id).then(
+                () => {
+                    this.status = DownloadStatus.Downloaded;
+                },
+                () => {
+                    this.status = DownloadStatus.NotDownloaded;
+                },
+            );
+        }
     }
 
     ngOnInit() {
         this.youtubeDownloadService.downloads.subscribe(msg => {
-            if (msg.type === "download-finished") {
-                this.status = DownloadStaus.Downloaded;
-            } else if (msg.type === "download-error") {
-                this.status = DownloadStaus.Error;
-            } else if (msg.type === "download-progress") {
-                this.status = DownloadStaus.Downloading;
+            if (this.result && msg.data.id === this.result.id) {
+                if (msg.type === 'download-finished') {
+                    this.status = DownloadStatus.Downloaded;
+                    // this.musicFileService.addTrack(msg.data.id);    
+                } else if (msg.type === 'download-error') {
+                    this.status = DownloadStatus.Error;
+                } else if (msg.type === 'download-progress') {
+                    this.status = DownloadStatus.Downloading;
+                }
             }
-            console.log(msg);
         });
     }
 
     downloadVideo(videoId) {
-        this.status = DownloadStaus.Downloading;
+
+        this.status = DownloadStatus.Downloading;
         this.youtubeDownloadService.downloadVideo(videoId);
     }
 

@@ -3,32 +3,34 @@ import { Storage } from '@ionic/storage';
 
 import { TrackDetail } from './../models/track-detail.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MusicFileService {
 
   constructor(private storage: Storage) { }
 
-
-  public downloadTrack(videoId: string) {
+  public downloadTrack(id: string) {
 
   }
 
-  public getAllTracks() {
-    this.storage.get('tracks').then((tracks) => {
+  public playTrack(id: string) {
 
+  }
+
+  public getTrackMetaData(id: string) {
+    let promise = new Promise((resolve, reject) => {
+      this.storage.get(id).then((track) => {
+        if (track) {
+          resolve(track);
+        } else {
+          reject();
+        }
+      });
     });
+
+    return promise;
   }
 
-  public getTrack(id: string) {
-    this.storage.get(id).then((track) => {
-
-    });
-  }
-
-  public addTrack(track: TrackDetail) {
+  public addTrackMetadata(track: TrackDetail) {
     this.storage.set(track.id, track);
   }
-
 }
