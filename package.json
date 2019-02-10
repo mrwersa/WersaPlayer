@@ -82,7 +82,6 @@
     "description": "An Ionic project",
     "cordova": {
         "plugins": {
-            "cordova-plugin-youtube-video-player": {},
             "cordova-plugin-whitelist": {},
             "cordova-plugin-statusbar": {},
             "cordova-plugin-device": {},
