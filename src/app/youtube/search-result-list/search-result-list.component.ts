@@ -21,7 +21,7 @@ export class SearchResultListComponent implements OnInit {
 
   @Input()
   set results(_results: VideoDetail[]) {
-    if (_results) {
+    if (_results && _results.length > 0) {
       this._results = _results;
       this.nextPageToken = this._results[this.results.length - 1].nextPageToken;
     } else {
