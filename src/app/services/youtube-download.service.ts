@@ -18,7 +18,7 @@ export class YoutubeDownloadService {
       }));
   }
 
-  downloadVideo(videoId) {
+  downloadVideo(videoId: string) {
     this.downloads.next(videoId);
   }
 }

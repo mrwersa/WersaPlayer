@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+
 import { VideoDetail } from '../../models/video-detail.model';
 import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
-
 import { YoutubeDownloadService } from '../../services/youtube-download.service';
 import { MusicFileService } from '../../services/music-file.service';
 
@@ -26,6 +27,7 @@ export class SearchResultComponent implements OnInit {
         private youtubeVideoPlayer: YoutubeVideoPlayer,
         private youtubeDownloadService: YoutubeDownloadService,
         private musicFileService: MusicFileService,
+        public alertController: AlertController
     ) {
         this.status = DownloadStatus.NotDownloaded;
     }
@@ -57,6 +59,8 @@ export class SearchResultComponent implements OnInit {
                     // this.musicFileService.addTrack(msg.data.id);    
                 } else if (msg.type === 'download-error') {
                     this.status = DownloadStatus.Error;
+                    this.presentError(msg.data.id);
+                    console.log(msg.data);
                 } else if (msg.type === 'download-progress') {
                     this.status = DownloadStatus.Downloading;
                 }
@@ -72,5 +76,15 @@ export class SearchResultComponent implements OnInit {
 
     playVideo(videoId) {
         this.youtubeVideoPlayer.openVideo(videoId);
+    }
+
+    async presentError(videoName: string) {
+        const alert = await this.alertController.create({
+            header: 'Error',
+            message: 'Failed to download ' + videoName,
+            buttons: ['OK']
+        });
+
+        await alert.present();
     }
 }

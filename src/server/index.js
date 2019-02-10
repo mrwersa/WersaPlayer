@@ -11,7 +11,7 @@ io.on('connection', (socket) => {
 
     socket.on('download', (videoId) => {
         var YD = new YoutubeMp3Downloader({
-            "ffmpegPath": "/usr/local/Cellar/ffmpeg/4.1_6/bin/ffmpeg",
+            "ffmpegPath": "/usr/local/Cellar/ffmpeg/4.1_6/bins/ffmpeg",
             "outputPath": __dirname + path.sep + "downloads",
             "youtubeVideoQuality": "highest",
             "queueParallelism": 2,
@@ -38,13 +38,13 @@ app.get('/downloads/:id', (req, res) => {
     var filePath = path.join(__dirname, "downloads" + path.sep + req.params.id + ".mp3");
     var stat = fileSystem.statSync(filePath);
 
-    response.writeHead(200, {
+    res.writeHead(200, {
         'Content-Type': 'audio/mpeg',
         'Content-Length': stat.size
     });
 
     var readStream = fileSystem.createReadStream(filePath);
-    readStream.pipe(response);
+    readStream.pipe(res);
 });
 
 

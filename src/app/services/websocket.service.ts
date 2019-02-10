@@ -30,7 +30,7 @@ export class WebsocketService {
     });
 
     let observer = {
-      next: (videoId: String) => {
+      next: (videoId: string) => {
         this.socket.emit('download', videoId);
       },
     };
