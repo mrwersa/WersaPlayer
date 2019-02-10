@@ -58,7 +58,7 @@ export class SearchResultComponent implements OnInit {
                 } else if (msg.type === 'download-error') {
                     this.status = DownloadStatus.Error;
                     this.presentError(msg.data.id);
-                    console.log(msg.data);
+                    console.log(msg);
                 } else if (msg.type === 'download-progress') {
                     this.status = DownloadStatus.Downloading;
                 } else if (msg.type === 'download-status') {
