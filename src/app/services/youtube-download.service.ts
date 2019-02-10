@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 
 import { WebsocketService } from './websocket.service';
 
@@ -8,17 +7,20 @@ import { WebsocketService } from './websocket.service';
   providedIn: 'root'
 })
 export class YoutubeDownloadService {
-  public downloads: Subject<any>;
 
   constructor(private websocketService: WebsocketService) {
-    this.downloads = <Subject<any>>websocketService
-      .connect()
-      .pipe(map((response: any): any => {
-        return response;
-      }));
+    this.websocketService.connect();
   }
 
-  downloadVideo(videoId: string) {
-    this.downloads.next(videoId);
+  public downloadVideo(videoId: string) {
+    this.websocketService.sendMessage('download', videoId);
+  }
+
+  public getDownloadStatus(videoId: string) {
+    this.websocketService.sendMessage('download-status', videoId);
+  }
+
+  public onMessage(): Observable<Object> {
+    return this.websocketService.onMessage();
   }
 }

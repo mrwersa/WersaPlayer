@@ -28,9 +28,7 @@ export class SearchResultComponent implements OnInit {
         private youtubeDownloadService: YoutubeDownloadService,
         private musicFileService: MusicFileService,
         public alertController: AlertController
-    ) {
-        this.status = DownloadStatus.NotDownloaded;
-    }
+    ) { }
 
     get result(): VideoDetail {
         return this._result;
@@ -45,31 +43,36 @@ export class SearchResultComponent implements OnInit {
                     this.status = DownloadStatus.Downloaded;
                 },
                 () => {
-                    this.status = DownloadStatus.NotDownloaded;
+                    this.youtubeDownloadService.getDownloadStatus(this._result.id);
                 },
             );
         }
     }
 
     ngOnInit() {
-        this.youtubeDownloadService.downloads.subscribe(msg => {
+        this.youtubeDownloadService.onMessage().subscribe((msg: any) => {
             if (this.result && msg.data.id === this.result.id) {
                 if (msg.type === 'download-finished') {
                     this.status = DownloadStatus.Downloaded;
-                    // this.musicFileService.addTrack(msg.data.id);    
+                    // this.musicFileService.addTrack(msg.data.id);
                 } else if (msg.type === 'download-error') {
                     this.status = DownloadStatus.Error;
                     this.presentError(msg.data.id);
                     console.log(msg.data);
                 } else if (msg.type === 'download-progress') {
                     this.status = DownloadStatus.Downloading;
+                } else if (msg.type === 'download-status') {
+                    if (msg.data.status === 'downloading') {
+                        this.status = DownloadStatus.Downloading;
+                    } else {
+                        this.status = DownloadStatus.NotDownloaded;
+                    }
                 }
             }
         });
     }
 
     downloadVideo(videoId) {
-
         this.status = DownloadStatus.Downloading;
         this.youtubeDownloadService.downloadVideo(videoId);
     }

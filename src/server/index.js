@@ -5,6 +5,7 @@ var io = require('socket.io')(server);
 var YoutubeMp3Downloader = require("youtube-mp3-downloader");
 var fileSystem = require('fs');
 var path = require('path');
+var downloading = [];
 
 io.on('connection', (socket) => {
     console.log('connected');
@@ -19,18 +20,30 @@ io.on('connection', (socket) => {
         });
 
         YD.download(videoId, videoId + ".mp3");
+        downloading.push(videoId);
 
         YD.on("finished", function(err, data) {
+            delete downloading.videoId;
             socket.emit('download-finished', { id: videoId, data: data });
         });
 
         YD.on("error", function(error) {
+            delete downloading.videoId;
             socket.emit('download-error', { id: videoId, data: error });
         });
 
         YD.on("progress", function(progress) {
             socket.emit('download-progress', { id: videoId, data: progress });
         });
+    });
+
+    socket.on('download-status', (videoId) => {
+        var status = 'downloaded';
+        if (downloading.indexOf(videoId) > -1) {
+            status = 'downloading';
+        }
+
+        socket.emit('download-status', { id: videoId, status: status });
     });
 });
 
