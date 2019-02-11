@@ -3,7 +3,6 @@ import { AlertController } from '@ionic/angular';
 
 import { TrackDetail } from './../../models/track-detail.model';
 import { VideoDetail } from '../../models/video-detail.model';
-import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
 import { YoutubeDownloadService } from '../../services/youtube-download.service';
 import { MusicFileService } from '../../services/music-file.service';
 
@@ -25,7 +24,6 @@ export class SearchResultComponent implements OnInit {
     status: DownloadStatus;
 
     constructor(
-        private youtubeVideoPlayer: YoutubeVideoPlayer,
         private youtubeDownloadService: YoutubeDownloadService,
         private musicFileService: MusicFileService,
         public alertController: AlertController
@@ -91,7 +89,7 @@ export class SearchResultComponent implements OnInit {
     }
 
     playVideo(videoId) {
-        this.youtubeVideoPlayer.openVideo(videoId);
+
     }
 
     async presentError(videoName: string) {

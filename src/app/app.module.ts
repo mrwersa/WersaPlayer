@@ -14,8 +14,6 @@ import { IonicStorageModule } from '@ionic/storage';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file';
 
-import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
-
 import { MusicFileService } from './services/music-file.service';
 import { WebsocketService } from './services/websocket.service';
 import { YoutubeDownloadService } from './services/youtube-download.service';
@@ -35,7 +33,6 @@ import { YoutubeDownloadService } from './services/youtube-download.service';
     providers: [
         StatusBar,
         SplashScreen,
-        YoutubeVideoPlayer,
         WebsocketService,
         YoutubeDownloadService,
         MusicFileService,
