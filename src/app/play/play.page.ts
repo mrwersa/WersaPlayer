@@ -1,34 +1,35 @@
 import { Component } from '@angular/core';
 
+import { MusicFileService } from '../services/music-file.service';
+import { TrackDetail } from './../models/track-detail.model';
+
+
 @Component({
     selector: 'app-play',
     templateUrl: 'play.page.html',
     styleUrls: ['play.page.scss']
 })
 export class PlayPage {
-    tracks: any;
+    tracks: TrackDetail[];
     playing: boolean = true;
     currentTrack: any;
     progressInterval: any;
 
-    constructor() {
+    constructor(private musicFileService: MusicFileService) {
 
-        this.tracks = [
-            { title: 'Something About You', artist: 'ODESZA', playing: false, progress: 0 },
-            { title: 'Run', artist: 'Allison Wonderland', playing: false, progress: 0 },
-            { title: 'Breathe', artist: 'Seeb Neev', playing: false, progress: 0 },
-            { title: 'HyperParadise', artist: 'Hermitude', playing: false, progress: 0 },
-            { title: 'Lifespan', artist: 'Vaults', playing: false, progress: 0 },
-            { title: 'Stay High', artist: 'Tove Lo', playing: false, progress: 0 },
-            { title: 'Lean On', artist: 'Major Lazer', playing: false, progress: 0 },
-            { title: 'They Say', artist: 'Kilter', playing: false, progress: 0 }
-        ];
+        this.musicFileService.getAllTracs().then(
+            (tracks: TrackDetail[]) => {
+                this.tracks = tracks;
 
-        this.currentTrack = this.tracks[0];
+                if (this.tracks.length > 0) {
+                    this.currentTrack = this.tracks[0];
+                }
+            }
+        )
 
     }
 
-    playTrack(track) {
+    playTrack(track: TrackDetail) {
 
         // First stop any currently playing tracks
 
@@ -52,7 +53,7 @@ export class PlayPage {
 
     }
 
-    pauseTrack(track) {
+    pauseTrack(track: TrackDetail) {
 
         track.playing = false;
         clearInterval(this.progressInterval);

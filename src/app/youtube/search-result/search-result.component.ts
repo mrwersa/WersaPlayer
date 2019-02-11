@@ -39,7 +39,7 @@ export class SearchResultComponent implements OnInit {
     set result(_result: VideoDetail) {
         if (_result) {
             this._result = _result;
-            this.musicFileService.getTrackMetaData(this._result.id).then(
+            this.musicFileService.getTrack(this._result.id).then(
                 () => {
                     this.status = DownloadStatus.Downloaded;
                 },
@@ -54,10 +54,20 @@ export class SearchResultComponent implements OnInit {
         this.youtubeDownloadService.onMessage().subscribe((msg: any) => {
             if (this.result && msg.data.id === this.result.id) {
                 if (msg.type === 'download-finished') {
-                    this.status = DownloadStatus.Downloaded;
-                    this.musicFileService.downloadTrack(msg.data.id);
-                    console.log(msg.data);
-                    this.musicFileService.addTrackMetadata(new TrackDetail(msg.data.id));
+                    this.musicFileService.addTrack(new TrackDetail({
+                        id: msg.data.id,
+                        title: msg.data.data.title,
+                        description: msg.data.data.description,
+                        thumbnail: msg.data.data.thumbnail
+                    })).then(
+                        () => { // success
+                            this.status = DownloadStatus.Downloaded;
+                        },
+                        () => { // fail
+                            this.status = DownloadStatus.Error;
+                            this.presentError(msg.data.id);
+                        });
+
                 } else if (msg.type === 'download-error') {
                     this.status = DownloadStatus.Error;
                     this.presentError(msg.data.id);

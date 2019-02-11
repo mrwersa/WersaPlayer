@@ -8,14 +8,14 @@
 
 <ion-content>
     <ion-list no-lines>
-        <ion-item detail-none ion-item *ngFor="let track of tracks; let i = index;" (click)="track.playing ? pauseTrack(track) : playTrack(track)" [ngClass]="{ 'alternate': i % 2, 'playing': track.playing }">
+        <ion-item detail-none ion-item *ngFor="let track of tracks; let i = index;" (click)="track.playing ? pauseTrack(track) : playTrack(track)"
+            [ngClass]="{ 'alternate': i % 2, 'playing': track.playing }">
             <ion-avatar item-left>
-                <img [src]="'https://api.adorable.io/avatars/75/' + track.artist">
+                <!-- <img [src]="'https://api.adorable.io/avatars/75/' + track.artist"> -->
                 <ion-spinner item-right *ngIf="track.playing" name="bubbles" item-left></ion-spinner>
             </ion-avatar>
             <ion-label>
-                <h2>{{track.artist}}</h2>
-                <p>{{track.title}}</p>
+                <h2>{{track.title}}</h2>
             </ion-label>
         </ion-item>
     </ion-list>
