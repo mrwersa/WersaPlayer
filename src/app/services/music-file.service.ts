@@ -45,7 +45,7 @@ export class MusicFileService {
 
     public addTrack(track: TrackDetail) {
         const fileTransfer: FileTransferObject = this.transfer.create();
-        const url = 'http://' + environment.WS_URL + "/downloads/" + track.id;
+        const url = environment.WS_URL + "/downloads/" + track.id;
 
         let promise = new Promise((resolve, reject) => {
             fileTransfer.download(url, File.dataDirectory + track.id + '.mp3').then((entry) => {
