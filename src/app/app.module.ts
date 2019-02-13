@@ -12,11 +12,13 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
-import { File } from '@ionic-native/file';
+import { StoreModule } from '@ngrx/store';
 
 import { MusicFileService } from './services/music-file.service';
 import { WebsocketService } from './services/websocket.service';
 import { YoutubeDownloadService } from './services/youtube-download.service';
+import { AudioService } from './services/audio.service';
+import { mediaStateReducer } from './providers/store.service';
 
 @NgModule({
     declarations: [
@@ -28,6 +30,9 @@ import { YoutubeDownloadService } from './services/youtube-download.service';
         IonicModule.forRoot(),
         AppRoutingModule,
         HttpClientModule,
+        StoreModule.forRoot({
+            appState: mediaStateReducer
+        }),
         IonicStorageModule.forRoot()
     ],
     providers: [
@@ -38,6 +43,7 @@ import { YoutubeDownloadService } from './services/youtube-download.service';
         MusicFileService,
         FileTransfer,
         FileTransferObject,
+        AudioService,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent]

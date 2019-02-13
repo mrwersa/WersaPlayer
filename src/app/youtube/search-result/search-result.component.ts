@@ -61,14 +61,14 @@ export class SearchResultComponent implements OnInit {
                         () => { // success
                             this.status = DownloadStatus.Downloaded;
                         },
-                        () => { // fail
+                        (error) => { // fail
                             this.status = DownloadStatus.Error;
-                            this.presentError(msg.data.id);
+                            this.presentError(error);
                         });
 
                 } else if (msg.type === 'download-error') {
                     this.status = DownloadStatus.Error;
-                    this.presentError(msg.data.id);
+                    this.presentError(msg.data.data.title);
                     console.log(msg);
                 } else if (msg.type === 'download-progress') {
                     this.status = DownloadStatus.Downloading;
@@ -95,7 +95,7 @@ export class SearchResultComponent implements OnInit {
     async presentError(videoName: string) {
         const alert = await this.alertController.create({
             header: 'Error',
-            message: 'Failed to download ' + videoName,
+            message: 'Failed to download "' + videoName + '"',
             buttons: ['OK']
         });
 
