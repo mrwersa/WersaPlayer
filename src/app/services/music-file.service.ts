@@ -15,7 +15,7 @@ export class MusicFileService {
 
     constructor(private storage: Storage, private transfer: FileTransfer) { }
 
-    public getAllTracs() {
+    public getAllTracks() {
         let promise = new Promise((resolve, reject) => {
             let tracks: TrackDetail[] = [];
 

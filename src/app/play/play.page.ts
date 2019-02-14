@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import { NavController, NavParams, IonToolbar, IonContent, LoadingController } from '@ionic/angular';
+import { NavController, IonToolbar, IonContent, LoadingController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { CANPLAY, LOADEDMETADATA, PLAYING, TIMEUPDATE, LOADSTART, RESET } from '../providers/store.service';
 import { AudioService } from '../services/audio.service';
@@ -48,16 +48,15 @@ export class PlayPage {
     constructor(
         private musicFileService: MusicFileService,
         public navCtrl: NavController,
-        public navParams: NavParams,
         public audioService: AudioService,
         public loadingCtrl: LoadingController,
         private store: Store<any>
     ) {
-        let loader = this.presentLoading();
-        this.musicFileService.getAllTracs().then(
+       // this.presentLoading();
+        this.musicFileService.getAllTracks().then(
             (tracks: TrackDetail[]) => {
                 this.tracks = tracks;
-                this.loadingCtrl.dismiss('tracks');
+               // this.loadingCtrl.dismiss('tracks');
             }
         )
 
