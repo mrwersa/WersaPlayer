@@ -13,7 +13,7 @@ io.on('connection', (socket) => {
     socket.on('download', (videoId) => {
         var YD = new YoutubeMp3Downloader({
             "ffmpegPath": process.env.FFMPEG_PATH,
-            "outputPath": __dirname + path.sep + "downloads",
+            "outputPath": __dirname,
             "youtubeVideoQuality": "highest",
             "queueParallelism": 2,
             "progressTimeout": 2000
@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
         YD.download(videoId, videoId + ".mp3");
         downloading.push(videoId);
 
-        YD.on("finished", function (err, data) {
+        YD.on("finished", function(err, data) {
             var index = downloading.indexOf(videoId);
             if (index > -1) {
                 downloading.splice(index, 1);
@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
             socket.emit('download-finished', { id: videoId, data: data });
         });
 
-        YD.on("error", function (error) {
+        YD.on("error", function(error) {
             var index = downloading.indexOf(videoId);
             if (index > -1) {
                 downloading.splice(index, 1);
@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
             socket.emit('download-error', { id: videoId, data: error });
         });
 
-        YD.on("progress", function (progress) {
+        YD.on("progress", function(progress) {
             socket.emit('download-progress', { id: videoId, data: progress });
         });
     });
@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
 });
 
 app.get('/downloads/:id', (req, res) => {
-    var filePath = path.join(__dirname, "downloads" + path.sep + req.params.id + ".mp3");
+    var filePath = path.join(__dirname, path.sep + req.params.id + ".mp3");
     var stat = fileSystem.statSync(filePath);
 
     res.writeHead(200, {
