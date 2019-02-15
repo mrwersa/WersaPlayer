@@ -13,7 +13,7 @@ io.on('connection', (socket) => {
     socket.on('download', (videoId) => {
         var YD = new YoutubeMp3Downloader({
             "ffmpegPath": process.env.FFMPEG_PATH,
-            "outputPath": __dirname,
+            "outputPath": __dirname + path.sep,
             "youtubeVideoQuality": "highest",
             "queueParallelism": 2,
             "progressTimeout": 2000
