@@ -20,6 +20,8 @@ import { YoutubeDownloadService } from './services/youtube-download.service';
 import { AudioService } from './services/audio.service';
 import { mediaStateReducer } from './providers/store.service';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
     declarations: [
         AppComponent
@@ -30,6 +32,7 @@ import { mediaStateReducer } from './providers/store.service';
         IonicModule.forRoot(),
         AppRoutingModule,
         HttpClientModule,
+        BrowserAnimationsModule,
         StoreModule.forRoot({
             appState: mediaStateReducer
         }),

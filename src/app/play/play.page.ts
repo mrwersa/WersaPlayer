@@ -36,11 +36,11 @@ import { pluck, filter, map, distinctUntilChanged } from 'rxjs/operators';
 })
 export class PlayPage {
     tracks: any = [];
-    seekbar: FormControl = new FormControl("seekbar");
+    seekbar: FormControl = new FormControl('seekbar');
     state: any = {};
     onSeekState: boolean;
     currentTrack: any = {};
-    displayFooter: string = "inactive";
+    displayFooter = 'inactive';
     loggedIn: Boolean;
     @ViewChild(IonToolbar) toolBar: IonToolbar;
     @ViewChild(IonContent) content: IonContent;
@@ -52,13 +52,18 @@ export class PlayPage {
         public loadingCtrl: LoadingController,
         private store: Store<any>
     ) {
-       // this.presentLoading();
+
+        let loading = this.presentLoading();
         this.musicFileService.getAllTracks().then(
             (tracks: TrackDetail[]) => {
                 this.tracks = tracks;
-               // this.loadingCtrl.dismiss('tracks');
+                loading.then(
+                    () => {
+                        this.loadingCtrl.dismiss('tracks');
+                    }
+                );
             }
-        )
+        );
 
         this.musicFileService.tracks.subscribe((track: TrackDetail) => {
             this.tracks.push(track);
@@ -67,7 +72,7 @@ export class PlayPage {
 
     async presentLoading() {
         let loading = await this.loadingCtrl.create({
-            message: 'Loading Content. Please Wait...',
+            message: 'Loading tracks. Please Wait...',
             id: 'tracks'
         });
         return await loading.present();
@@ -211,7 +216,7 @@ export class PlayPage {
     reset() {
         this.resetState();
         this.currentTrack = {};
-        this.displayFooter = "inactive";
+        this.displayFooter = 'inactive';
     }
 
 }
