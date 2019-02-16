@@ -8,8 +8,9 @@ import { FormControl } from '@angular/forms';
 
 import { MusicFileService } from '../services/music-file.service';
 import { TrackDetail } from './../models/track-detail.model';
-import { File } from '@ionic-native/file';
+import { File, FileEntry } from '@ionic-native/file';
 import { pluck, filter, map, distinctUntilChanged } from 'rxjs/operators';
+
 
 @Component({
     selector: 'app-play',
@@ -107,8 +108,13 @@ export class PlayPage {
 
     openTrack(track, index) {
         this.currentTrack = { index, track };
-        let url = File.dataDirectory + track.id + '.mp3';
-        this.playStream(track.id);
+        let path = File.dataDirectory + track.id + '.mp3';
+        //let url = path.replace(/^file:\/\//g, '');
+
+        File.resolveLocalFilesystemUrl(path).then((entry: FileEntry) => {
+            console.log(entry.toURL().replace(/^file/g, 'capacitor-asset'))
+            this.playStream(entry.toURL().replace(/^file/g, 'capacitor-asset'));
+        });
     }
 
     resetState() {
@@ -120,6 +126,7 @@ export class PlayPage {
         this.resetState();
         this.audioService.playStream(url).subscribe(event => {
             const audioObj = event.target;
+            console.log(event)
 
             switch (event.type) {
                 case 'canplay':
