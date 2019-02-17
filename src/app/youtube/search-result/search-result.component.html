@@ -1,40 +1,35 @@
-<ion-card color="light">
-    <img src="{{result.thumbnailUrl}}" (click)='playVideo(this.result.id)' />
+<ion-item color="light">
+    <div [ngSwitch]="this.status" slot="start">
+        <ion-button slot="start" *ngSwitchCase="downloadStatus.Downloaded" fill="clear" size="small" disabled="true">
+            <ion-icon slot="icon-only" name="checkmark-circle-outline">
+            </ion-icon>
+        </ion-button>
 
-    <ion-card-header>
-        <ion-card-title>{{result.title}}</ion-card-title>
-    </ion-card-header>
+        <ion-button *ngSwitchCase="downloadStatus.Downloading" fill="clear" size="small" disabled="true">
+            <ion-spinner name="crescent">
+            </ion-spinner>
+        </ion-button>
 
-    <ion-card-content>
-        {{result.description}}
-    </ion-card-content>
+        <ion-button *ngSwitchCase="downloadStatus.NotDownloaded" fill="clear" size="small" (click)="downloadVideo(result.id)" disabled="false">
+            <ion-icon slot="icon-only" name="md-download">
+            </ion-icon>
+        </ion-button>
 
-    <ion-grid>
-        <ion-row>
-            <ion-col size="6" offset="3" align-self-center>
+        <ion-button *ngSwitchDefault fill="clear" size="small" disabled="true">
+            <ion-spinner name="dots">
+            </ion-spinner>
+        </ion-button>
+    </div>
 
-                <div [ngSwitch]="this.status">
-                    <div *ngSwitchCase="downloadStatus.Downloaded">
-                        <ion-button size="small" color="medium" (click)="downloadVideo(result.id)" expand="block" disabled="true">
-                            <ion-icon #elseBlock slot="icon-only" name="checkmark-circle-outline"></ion-icon>
-                            Downloaded
-                        </ion-button>
-                    </div>
-                    <div *ngSwitchCase="downloadStatus.Downloading">
-                        <ion-button size="small" color="primary" (click)="downloadVideo(result.id)" expand="block" disabled="true">
-                            <ion-spinner #thenBlock name="circles"></ion-spinner>
-                            Downloading...
-                        </ion-button>
-                    </div>
-                    <div *ngSwitchDefault>
-                        <ion-button size="small" color="primary" (click)="downloadVideo(result.id)" expand="block">
-                            <ion-icon #elseBlock slot="icon-only" name="md-download"></ion-icon>
-                            Download
-                        </ion-button>
-                    </div>
-                </div>
+    <ion-thumbnail slot="start">
+        <img src="{{result.thumbnailUrl}}" (click)='playVideo(this.result.id)' />
+    </ion-thumbnail>
 
-            </ion-col>
-        </ion-row>
-    </ion-grid>
-</ion-card>
+    <ion-label text-wrap>
+        <ion-text color="primary">
+            <h3>{{result.title}}</h3>
+        </ion-text>
+
+    </ion-label>
+
+</ion-item>
