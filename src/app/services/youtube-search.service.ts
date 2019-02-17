@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http/ngx';
 import { map } from 'rxjs/operators';
+import { Observable, from } from 'rxjs';
 
-import { Observable } from 'rxjs';
 import { VideoDetail } from '../models/video-detail.model';
 
 import { environment } from '../../environments/environment';
@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment';
 })
 export class YoutubeSearchService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HTTP) { }
 
   nextPage(nextPageToken: string): Observable<VideoDetail[]> {
     const params: string = [
@@ -25,8 +25,20 @@ export class YoutubeSearchService {
 
     const queryUrl = `${environment.YOUTUBE_API_URL}?${params}`;
 
-    return this.http.get(queryUrl).pipe(map(response => {
-      return response['items'].map(item => {
+    this.http.get(queryUrl, {}, {})
+      .then(data => {
+      }).catch(error => {
+
+        console.log(error.status);
+        console.log(error.error); // error message as string
+        console.log(error.headers);
+
+      });
+
+    return from(this.http.get(queryUrl, {}, {})).pipe(map(response => {
+      let data = JSON.parse(response.data);
+
+      return data['items'].map(item => {
         return new VideoDetail({
           id: item.id.videoId,
           title: item.snippet.title,
@@ -36,7 +48,6 @@ export class YoutubeSearchService {
         });
       });
     }));
-
   }
 
   search(query: string): Observable<VideoDetail[]> {
@@ -50,8 +61,10 @@ export class YoutubeSearchService {
 
     const queryUrl = `${environment.YOUTUBE_API_URL}?${params}`;
 
-    return this.http.get(queryUrl).pipe(map(response => {
-      return response['items'].map(item => {
+    return from(this.http.get(queryUrl, {}, {})).pipe(map(response => {
+      let data = JSON.parse(response.data);
+
+      return data['items'].map(item => {
         return new VideoDetail({
           id: item.id.videoId,
           title: item.snippet.title,

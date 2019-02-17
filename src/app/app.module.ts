@@ -5,11 +5,11 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { HTTP } from '@ionic-native/http/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { StoreModule } from '@ngrx/store';
@@ -31,7 +31,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         BrowserModule,
         IonicModule.forRoot(),
         AppRoutingModule,
-        HttpClientModule,
         BrowserAnimationsModule,
         StoreModule.forRoot({
             appState: mediaStateReducer
@@ -45,6 +44,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         YoutubeDownloadService,
         MusicFileService,
         FileTransfer,
+        HTTP,
         FileTransferObject,
         AudioService,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
