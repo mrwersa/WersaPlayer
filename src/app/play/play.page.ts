@@ -108,12 +108,12 @@ export class PlayPage {
 
     openTrack(track, index) {
         this.currentTrack = { index, track };
-        let path = File.dataDirectory + track.id + '.mp3';
-        //let url = path.replace(/^file:\/\//g, '');
+        const path = File.dataDirectory + track.id + '.mp3';
 
         File.resolveLocalFilesystemUrl(path).then((entry: FileEntry) => {
-            console.log(entry.toURL().replace(/^file/g, 'capacitor-asset'))
-            this.playStream(entry.toURL().replace(/^file/g, 'capacitor-asset'));
+            console.log(entry.toURL());
+
+            this.playStream(entry.toInternalURL());
         });
     }
 
@@ -126,7 +126,6 @@ export class PlayPage {
         this.resetState();
         this.audioService.playStream(url).subscribe(event => {
             const audioObj = event.target;
-            console.log(event)
 
             switch (event.type) {
                 case 'canplay':
