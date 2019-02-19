@@ -22,41 +22,6 @@
     <ion-toolbar color="primary">
         <music-progress (seek)="onSeek($event)" total="{{ state.duration }}" elapsed="{{ state.time }}" max="{{state.durationSec}}" value="{{seek}}"></music-progress>
 
-        <ion-grid>
-            <ion-row id="media-controls" align-items-center justify-content-center>
-                <ion-col size="4">
-                    <div text-center>
-                        <ion-button size="large" [disabled]="isFirstPlaying()" (click)="previous()">
-                            <ion-icon color="light" name="skip-backward"> </ion-icon>
-                        </ion-button>
-                    </div>
-                </ion-col>
-
-                <ion-col *ngIf="state.playing; else elseBlock" size="4">
-                    <div text-center>
-                        <ion-button size="large" (click)="pause()">
-                            <ion-icon color="light" name="pause"></ion-icon>
-                        </ion-button>
-                    </div>
-                </ion-col>
-                <ng-template #elseBlock>
-                    <ion-col size="4">
-                        <div text-center>
-                            <ion-button size="large" (click)="play()">
-                                <ion-icon color="light" name="play"></ion-icon>
-                            </ion-button>
-                        </div>
-                    </ion-col>
-                </ng-template>
-
-                <ion-col size="4">
-                    <div text-center>
-                        <ion-button size="large" [disabled]="isLastPlaying()" (click)="next()">
-                            <ion-icon name="skip-forward"></ion-icon>
-                        </ion-button>
-                    </div>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
+        <music-controls [isPlaying]="state.playing" [hasNext]="!isLastPlaying()" [hasPrev]="!isFirstPlaying()" (play)="play()" (pause)="pause()" (previous)="previous()" (next)="next()"></music-controls>
     </ion-toolbar>
 </ion-footer>

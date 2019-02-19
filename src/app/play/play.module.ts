@@ -7,6 +7,7 @@ import { PlayPage } from './play.page';
 import { MatSliderModule } from '@angular/material/slider';
 
 import { MusicProgressComponent } from '../music/music-progress/music-progress.component';
+import { MusicControlsComponent } from '../music/music-controls/music-controls.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { MusicProgressComponent } from '../music/music-progress/music-progress.c
     ],
     declarations: [
         PlayPage,
-        MusicProgressComponent
+        MusicProgressComponent,
+        MusicControlsComponent
     ]
 })
 export class PlayPageModule { }

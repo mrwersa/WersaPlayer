@@ -1,0 +1,36 @@
+<ion-grid>
+    <ion-row id="media-controls" align-items-center justify-content-center>
+        <ion-col size="4">
+            <div text-center>
+                <ion-button size="large" [disabled]="!hasPrev" (click)="onPrevious()">
+                    <ion-icon color="light" name="skip-backward"> </ion-icon>
+                </ion-button>
+            </div>
+        </ion-col>
+
+        <ion-col *ngIf="isPlaying; else elseBlock" size="4">
+            <div text-center>
+                <ion-button size="large" (click)="onPause()">
+                    <ion-icon color="light" name="pause"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-col>
+        <ng-template #elseBlock>
+            <ion-col size="4">
+                <div text-center>
+                    <ion-button size="large" (click)="onPlay()">
+                        <ion-icon color="light" name="play"></ion-icon>
+                    </ion-button>
+                </div>
+            </ion-col>
+        </ng-template>
+
+        <ion-col size="4">
+            <div text-center>
+                <ion-button size="large" [disabled]="!hasNext" (click)="onNext()">
+                    <ion-icon name="skip-forward"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-col>
+    </ion-row>
+</ion-grid>

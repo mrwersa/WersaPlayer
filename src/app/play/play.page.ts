@@ -37,13 +37,18 @@ export class PlayPage implements OnInit {
     state: any = {};
     displayFooter = 'inactive';
 
-    constructor(private musicControls: MusicControls, private audioFileService: AudioFileService, private store: Store<any>) {
+    constructor(
+        private musicControls: MusicControls,
+        private audioFileService: AudioFileService,
+        private store: Store<any>
+    ) { }
+
+    ngOnInit() {
+        // track listener
         this.audioFileService.tracks.subscribe((track: TrackDetail) => {
             this.tracks.push(track);
         });
-    }
 
-    ngOnInit() {
         this.store.select('mediaState').subscribe((value: any) => {
             this.state = value.media;
         });
@@ -95,7 +100,6 @@ export class PlayPage implements OnInit {
 
         // music controls callbacks
         this.musicControls.subscribe().subscribe(action => {
-            console.log('asdasdasdasdasdasdasdasdas');
             const message = JSON.parse(action).message;
             console.log(message);
             switch (message) {
@@ -111,13 +115,8 @@ export class PlayPage implements OnInit {
                 case 'music-controls-play':
                     this.play();
                     break;
-                case 'music-controls-destroy':
-                    // self.reset();
-                    break;
 
                 // External controls (iOS only)
-                case 'music-controls-toggle-play-pause':
-                    break;
                 case 'music-controls-seek-to':
                     const seekToInSeconds = JSON.parse(action).position;
                     this.musicControls.updateElapsed({
@@ -148,10 +147,6 @@ export class PlayPage implements OnInit {
         this.audioFileService.playTrack();
     }
 
-    stop() {
-        this.audioFileService.stopTrack();
-    }
-
     next() {
         this.openTrack(this.currentIndex + 1);
     }
@@ -170,10 +165,5 @@ export class PlayPage implements OnInit {
 
     onSeek(event: any) {
         this.audioFileService.seekTo(event * 1000);
-    }
-
-    reset() {
-        this.currentIndex = -1;
-        this.displayFooter = 'inactive';
     }
 }
