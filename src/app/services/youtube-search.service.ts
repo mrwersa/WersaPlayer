@@ -22,7 +22,7 @@ export class YoutubeSearchService {
       `pageToken=${nextPageToken}`
     ].join('&');
 
-    return this.getYouTubeDataAPI(params);
+    return this.getYouTubeDataAPI(encodeURI(params));
   }
 
   search(query: string): Observable<VideoDetail[]> {
@@ -35,7 +35,7 @@ export class YoutubeSearchService {
       `videoDuration=short`
     ].join('&');
 
-    return this.getYouTubeDataAPI(params);
+    return this.getYouTubeDataAPI(encodeURI(params));
   }
 
   private getYouTubeDataAPI(params: string): Observable<VideoDetail[]> {
