@@ -25,11 +25,9 @@
             <ion-label color="light" slot="end">{{ state.duration }}</ion-label>
         </ion-range> -->
         <music-progress (seek)="onSeek($event)" total="{{ state.duration }}" elapsed="{{ state.time }}" max="{{state.durationSec}}" value="{{seek}}"></music-progress>
-    </ion-toolbar>
 
-    <ion-toolbar color="primary" padding>
         <ion-grid>
-            <ion-row id="media-controls">
+            <ion-row id="media-controls" align-items-center>
                 <ion-col size="4" align-self-center>
                     <ion-button size="large" [disabled]="isFirstPlaying()" (click)="previous()">
                         <ion-icon color="light" name="skip-backward"> </ion-icon>

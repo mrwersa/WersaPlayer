@@ -25,8 +25,7 @@ export class MusicProgressComponent {
   }
 
   onInputChange(event: any) {
-    console.log(event);
-    this.seek.emit(event.target.value);
+    this.seek.emit(event.value);
   }
 
 }
