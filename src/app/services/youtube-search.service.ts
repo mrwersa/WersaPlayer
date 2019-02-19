@@ -18,36 +18,11 @@ export class YoutubeSearchService {
     const params: string = [
       `key=${environment.YOUTUBE_API_KEY}`,
       `part=snippet`,
-      `type=video`,
       `maxResults=10`,
       `pageToken=${nextPageToken}`
     ].join('&');
 
-    const queryUrl = `${environment.YOUTUBE_API_URL}?${params}`;
-
-    this.http.get(queryUrl, {}, {})
-      .then(data => {
-      }).catch(error => {
-
-        console.log(error.status);
-        console.log(error.error); // error message as string
-        console.log(error.headers);
-
-      });
-
-    return from(this.http.get(queryUrl, {}, {})).pipe(map(response => {
-      let data = JSON.parse(response.data);
-
-      return data['items'].map(item => {
-        return new VideoDetail({
-          id: item.id.videoId,
-          title: item.snippet.title,
-          description: item.snippet.description,
-          thumbnailUrl: item.snippet.thumbnails.high.url,
-          nextPageToken: response['nextPageToken']
-        });
-      });
-    }));
+    return this.getYouTubeDataAPI(params);
   }
 
   search(query: string): Observable<VideoDetail[]> {
@@ -56,21 +31,27 @@ export class YoutubeSearchService {
       `key=${environment.YOUTUBE_API_KEY}`,
       `part=snippet`,
       `type=video`,
-      `maxResults=10`
+      `maxResults=10`,
+      `videoDuration=short`
     ].join('&');
 
+    return this.getYouTubeDataAPI(params);
+  }
+
+  private getYouTubeDataAPI(params: string): Observable<VideoDetail[]> {
     const queryUrl = `${environment.YOUTUBE_API_URL}?${params}`;
 
     return from(this.http.get(queryUrl, {}, {})).pipe(map(response => {
       let data = JSON.parse(response.data);
 
       return data['items'].map(item => {
+        console.log(item);
         return new VideoDetail({
           id: item.id.videoId,
           title: item.snippet.title,
           description: item.snippet.description,
           thumbnailUrl: item.snippet.thumbnails.high.url,
-          nextPageToken: response['nextPageToken']
+          nextPageToken: data['nextPageToken']
         });
       });
     }));

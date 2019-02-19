@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { WebsocketService } from './websocket.service';
 
@@ -14,10 +14,6 @@ export class YoutubeDownloadService {
 
   public downloadVideo(videoId: string) {
     this.websocketService.sendMessage('download', videoId);
-  }
-
-  public getDownloadStatus(videoId: string) {
-    this.websocketService.sendMessage('download-status', videoId);
   }
 
   public onMessage(): Observable<Object> {

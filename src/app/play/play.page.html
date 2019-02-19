@@ -10,10 +10,10 @@
 
     <ion-list *ngIf="tracks.length">
         <ng-container *ngFor="let track of tracks; let i = index">
-            <ion-item text-wrap (click)="openTrack(track, i)">
+            <ion-item text-wrap (click)="openTrack(i)">
                 <ion-icon color="primary" item-start name="musical-notes"></ion-icon>{{ track.title }}
-                <ion-icon *ngIf="currentTrack.index === i" slot="end" name="musical-note"></ion-icon>
-                <ion-icon *ngIf="currentTrack.index !== i" slot="end" name="play"></ion-icon>
+                <ion-icon *ngIf="currentIndex === i" slot="end" name="musical-note"></ion-icon>
+                <ion-icon *ngIf="currentIndex !== i" slot="end" name="play"></ion-icon>
             </ion-item>
         </ng-container>
     </ion-list>
@@ -22,13 +22,12 @@
 
 
 
-<ion-footer *ngIf="currentTrack" [@showHide]="displayFooter">
+<ion-footer *ngIf="currentIndex != -1" [@showHide]="displayFooter">
 
     <ion-toolbar color="primary">
-        <ion-range min="0" color="light" [max]="state.durationSec" [formControl]="seekbar" (ionFocus)="onSeekStart()"
-            (ionBlur)="onSeekEnd($event)" name="seekbar">
-            <ion-label color="light" range-left>{{ state.time }}</ion-label>
-            <ion-label color="light" range-right>{{ state.duration }}</ion-label>
+        <ion-range min="0" color="light" [max]="state.durationSec" (ionChange)="onSeekChange($event)" [value]="seek">
+            <ion-label color="light" slot="start">{{ state.time }}</ion-label>
+            <ion-label color="light" slot="end">{{ state.duration }}</ion-label>
         </ion-range>
     </ion-toolbar>
 

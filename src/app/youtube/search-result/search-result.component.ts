@@ -4,7 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { TrackDetail } from './../../models/track-detail.model';
 import { VideoDetail } from '../../models/video-detail.model';
 import { YoutubeDownloadService } from '../../services/youtube-download.service';
-import { MusicFileService } from '../../services/music-file.service';
+import { AudioFileService } from '../../services/audio-file.service';
 
 enum DownloadStatus {
     NotDownloaded,
@@ -25,7 +25,7 @@ export class SearchResultComponent implements OnInit {
 
     constructor(
         private youtubeDownloadService: YoutubeDownloadService,
-        private musicFileService: MusicFileService,
+        private audioFileService: AudioFileService,
         public alertController: AlertController
     ) { }
 
@@ -37,12 +37,13 @@ export class SearchResultComponent implements OnInit {
     set result(_result: VideoDetail) {
         if (_result) {
             this._result = _result;
-            this.musicFileService.getTrack(this._result.id).then(
+            this.audioFileService.getTrack(this._result.id).then(
                 () => {
+                    // it's already downloaded
                     this.status = DownloadStatus.Downloaded;
                 },
                 () => {
-                    this.youtubeDownloadService.getDownloadStatus(this._result.id);
+                    this.status = DownloadStatus.NotDownloaded;
                 },
             );
         }
@@ -52,7 +53,7 @@ export class SearchResultComponent implements OnInit {
         this.youtubeDownloadService.onMessage().subscribe((msg: any) => {
             if (this.result && msg.data.id === this.result.id) {
                 if (msg.type === 'download-finished') {
-                    this.musicFileService.addTrack(new TrackDetail({
+                    this.audioFileService.addTrack(new TrackDetail({
                         id: msg.data.id,
                         title: msg.data.data.title,
                         description: msg.data.data.description,
@@ -72,12 +73,6 @@ export class SearchResultComponent implements OnInit {
                     console.log(msg);
                 } else if (msg.type === 'download-progress') {
                     this.status = DownloadStatus.Downloading;
-                } else if (msg.type === 'download-status') {
-                    if (msg.data.status === 'downloading') {
-                        this.status = DownloadStatus.Downloading;
-                    } else {
-                        this.status = DownloadStatus.NotDownloaded;
-                    }
                 }
             }
         });

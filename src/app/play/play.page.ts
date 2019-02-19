@@ -1,16 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import { NavController, IonToolbar, IonContent, LoadingController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
-import { CANPLAY, LOADEDMETADATA, PLAYING, TIMEUPDATE, LOADSTART, RESET } from '../providers/store.service';
-import { AudioService } from '../services/audio.service';
-import { FormControl } from '@angular/forms';
 
-import { MusicFileService } from '../services/music-file.service';
+import { AudioFileService } from '../services/audio-file.service';
 import { TrackDetail } from './../models/track-detail.model';
-import { File, FileEntry } from '@ionic-native/file';
 import { pluck, filter, map, distinctUntilChanged } from 'rxjs/operators';
-
 
 @Component({
     selector: 'app-play',
@@ -35,66 +29,33 @@ import { pluck, filter, map, distinctUntilChanged } from 'rxjs/operators';
         ])
     ]
 })
-export class PlayPage {
-    tracks: any = [];
-    seekbar: FormControl = new FormControl('seekbar');
+export class PlayPage implements OnInit {
+    tracks: TrackDetail[] = [];
+    currentIndex = -1;
+    seek = 0;
     state: any = {};
-    onSeekState: boolean;
-    currentTrack: any = {};
     displayFooter = 'inactive';
-    loggedIn: Boolean;
-    @ViewChild(IonToolbar) toolBar: IonToolbar;
-    @ViewChild(IonContent) content: IonContent;
 
-    constructor(
-        private musicFileService: MusicFileService,
-        public navCtrl: NavController,
-        public audioService: AudioService,
-        public loadingCtrl: LoadingController,
-        private store: Store<any>
-    ) {
-
-        let loading = this.presentLoading();
-        this.musicFileService.getAllTracks().then(
-            (tracks: TrackDetail[]) => {
-                this.tracks = tracks;
-                loading.then(
-                    () => {
-                        this.loadingCtrl.dismiss('tracks');
-                    }
-                );
-            }
-        );
-
-        this.musicFileService.tracks.subscribe((track: TrackDetail) => {
+    constructor(private audioFileService: AudioFileService, private store: Store<any>) {
+        this.audioFileService.tracks.subscribe((track: TrackDetail) => {
             this.tracks.push(track);
         });
     }
 
-    async presentLoading() {
-        let loading = await this.loadingCtrl.create({
-            message: 'Loading tracks. Please Wait...',
-            id: 'tracks'
-        });
-        return await loading.present();
-    }
-
-    ionViewWillLoad() {
-        this.store.select('appState').subscribe((value: any) => {
+    ngOnInit() {
+        this.store.select('mediaState').subscribe((value: any) => {
+            console.log('mediaaaaa')
             this.state = value.media;
         });
 
-        // Resize the Content Screen so that Ionic is aware of footer
-        this.store
-            .select('appState')
-            .pipe(pluck('media', 'canplay'), filter(value => value === true))
+        this.store.select('mediaState')
+            .pipe(pluck('media', 'loadedmetadata'), filter(value => value === true))
             .subscribe(() => {
                 this.displayFooter = 'active';
             });
 
         // Updating the Seekbar based on currentTime
-        this.store
-            .select('appState')
+        this.store.select('mediaState')
             .pipe(
                 pluck('media', 'timeSec'),
                 filter(value => value !== undefined),
@@ -102,127 +63,53 @@ export class PlayPage {
                 distinctUntilChanged()
             )
             .subscribe((value: any) => {
-                this.seekbar.setValue(value);
+                this.seek = value;
             });
     }
 
-    openTrack(track, index) {
-        this.currentTrack = { index, track };
-        const path = File.dataDirectory + track.id + '.mp3';
-
-        File.resolveLocalFilesystemUrl(path).then((entry: FileEntry) => {
-            console.log(entry.toURL());
-
-            this.playStream(entry.toInternalURL());
-        });
-    }
-
-    resetState() {
-        this.audioService.stop();
-        this.store.dispatch({ type: RESET });
-    }
-
-    playStream(url) {
-        this.resetState();
-        this.audioService.playStream(url).subscribe(event => {
-            const audioObj = event.target;
-
-            switch (event.type) {
-                case 'canplay':
-                    return this.store.dispatch({ type: CANPLAY, payload: { value: true } });
-
-                case 'loadedmetadata':
-                    return this.store.dispatch({
-                        type: LOADEDMETADATA,
-                        payload: {
-                            value: true,
-                            data: {
-                                time: this.audioService.formatTime(
-                                    audioObj.duration * 1000,
-                                    'HH:mm:ss'
-                                ),
-                                timeSec: audioObj.duration,
-                                mediaType: 'mp3'
-                            }
-                        }
-                    });
-
-                case 'playing':
-                    return this.store.dispatch({ type: PLAYING, payload: { value: true } });
-
-                case 'pause':
-                    return this.store.dispatch({ type: PLAYING, payload: { value: false } });
-
-                case 'timeupdate':
-                    return this.store.dispatch({
-                        type: TIMEUPDATE,
-                        payload: {
-                            timeSec: audioObj.currentTime,
-                            time: this.audioService.formatTime(
-                                audioObj.currentTime * 1000,
-                                'HH:mm:ss'
-                            )
-                        }
-                    });
-
-                case 'loadstart':
-                    return this.store.dispatch({ type: LOADSTART, payload: { value: true } });
-            }
-        });
+    openTrack(index) {
+        this.currentIndex = index;
+        if (index >= 0 && index < this.tracks.length) {
+            this.audioFileService.openTrack(this.tracks[index]);
+        }
     }
 
     pause() {
-        this.audioService.pause();
+        this.audioFileService.pauseTrack();
     }
 
     play() {
-        this.audioService.play();
+        this.audioFileService.playTrack();
     }
 
     stop() {
-        this.audioService.stop();
+        this.audioFileService.stopTrack();
     }
 
     next() {
-        let index = this.currentTrack.index + 1;
-        let file = this.tracks[index];
-        this.openTrack(file, index);
+        this.openTrack(this.currentIndex + 1);
     }
 
     previous() {
-        let index = this.currentTrack.index - 1;
-        let file = this.tracks[index];
-        this.openTrack(file, index);
+        this.openTrack(this.currentIndex - 1);
     }
 
     isFirstPlaying() {
-        return this.currentTrack.index === 0;
+        return this.currentIndex === 0;
     }
 
     isLastPlaying() {
-        return this.currentTrack.index === this.tracks.length - 1;
+        return this.currentIndex === this.tracks.length - 1;
     }
 
-    onSeekStart() {
-        this.onSeekState = this.state.playing;
-        if (this.onSeekState) {
-            this.pause();
-        }
-    }
-
-    onSeekEnd(event) {
-        if (this.onSeekState) {
-            this.audioService.seekTo(event.value);
-            this.play();
-        } else {
-            this.audioService.seekTo(event.value);
-        }
+    onSeekChange(event) {
+        this.audioFileService.seekTo(event.value);
     }
 
     reset() {
-        this.resetState();
-        this.currentTrack = {};
+        this.currentIndex = -1;
         this.displayFooter = 'inactive';
     }
+
 
 }

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AudioService } from './audio.service';
+import { AudioFileService } from './audio-file.service';
 
-describe('AudioService', () => {
+describe('AudioFileService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: AudioService = TestBed.get(AudioService);
+    const service: AudioFileService = TestBed.get(AudioFileService);
     expect(service).toBeTruthy();
   });
 });
