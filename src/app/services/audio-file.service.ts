@@ -27,19 +27,22 @@ export class AudioFileService {
         });
 
         // dispatch track progress every one second
+        let self = this;
         setInterval(function () {
-            if (this.mediaObject) {
-                this.mediaObject.getCurrentPosition().then((curpos) => {
-                    this.store.dispatch({
-                        type: TIMEUPDATE,
-                        payload: {
-                            timeSec: curpos,
-                            time: this.formatTime(
-                                curpos * 1000,
-                                'mm:ss'
-                            )
-                        }
-                    });
+            if (self.mediaObject) {
+                self.mediaObject.getCurrentPosition().then((position) => {
+                    if (position > -1) {
+                        self.store.dispatch({
+                            type: TIMEUPDATE,
+                            payload: {
+                                timeSec: position,
+                                time: self.formatTime(
+                                    position * 1000,
+                                    'mm:ss'
+                                )
+                            }
+                        });
+                    }
                 });
             }
         }, 1000);
@@ -81,39 +84,9 @@ export class AudioFileService {
 
         const path = File.dataDirectory.replace(/^file:\/\//, '') + track.id + '.mp3';
         this.mediaObject = this.media.create(path);
-        let duration = this.mediaObject.getDuration();
 
-        let counter = 0;
-        let timerDur = setInterval(function () {
-            counter = counter + 100;
-            if (counter > 2000) {
-                clearInterval(timerDur);
-                this.store.dispatch({
-                    type: LOADEDMETADATA,
-                    payload: {
-                        value: false,
-                    }
-                });
-            }
-            let dur = this.mediaObject.getDuration();
-            if (dur > 0) {
-                clearInterval(timerDur);
-                this.store.dispatch({
-                    type: LOADEDMETADATA,
-                    payload: {
-                        value: true,
-                        data: {
-                            time: this.formatTime(
-                                duration * 1000,
-                                'mm:ss'
-                            ),
-                            timeSec: duration,
-                            mediaType: 'mp3'
-                        }
-                    }
-                });
-            }
-        }, 100);
+        this.playTrack();
+        this.loadMetadata();
     }
 
     public playTrack() {
@@ -155,7 +128,42 @@ export class AudioFileService {
         return moment.utc(time).format(format);
     }
 
-    private getDurationSec(duration) {
-        return moment.duration(duration).asSeconds();
+    private loadMetadata() {
+        if (!this.mediaObject) {
+            return;
+        }
+
+        let counter = 0;
+        let self = this;
+        let timerDur = setInterval(function () {
+            counter++;
+            if (counter > 20) {
+                clearInterval(timerDur);
+                self.store.dispatch({
+                    type: LOADEDMETADATA,
+                    payload: {
+                        value: false,
+                    }
+                });
+            }
+            let duration = self.mediaObject.getDuration();
+            if (duration > 0) {
+                clearInterval(timerDur);
+                self.store.dispatch({
+                    type: LOADEDMETADATA,
+                    payload: {
+                        value: true,
+                        data: {
+                            time: self.formatTime(
+                                duration * 1000,
+                                'mm:ss'
+                            ),
+                            timeSec: duration,
+                            mediaType: 'mp3'
+                        }
+                    }
+                });
+            }
+        }, 100);
     }
 }

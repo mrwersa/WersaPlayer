@@ -44,7 +44,6 @@ export class PlayPage implements OnInit {
 
     ngOnInit() {
         this.store.select('mediaState').subscribe((value: any) => {
-            console.log('mediaaaaa')
             this.state = value.media;
         });
 
