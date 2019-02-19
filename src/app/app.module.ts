@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,6 +47,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         FileTransfer,
         HTTP,
         Media,
+        BackgroundMode,
         FileTransferObject,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],

@@ -45,7 +45,7 @@ export class AudioFileService {
                     }
                 });
             }
-        }, 1000);
+        }, 250);
     }
 
     public getTrack(id: string) {
@@ -92,8 +92,7 @@ export class AudioFileService {
     public playTrack() {
         if (this.mediaObject) {
             this.mediaObject.play({
-                numberOfLoops: 2,
-                playAudioWhenScreenIsLocked: false
+                playAudioWhenScreenIsLocked: true
             });
             this.store.dispatch({ type: PLAYING, payload: { value: true } });
         }
