@@ -173,14 +173,15 @@ export class PlayPage implements OnInit {
         return this.currentIndex === this.tracks.length - 1;
     }
 
-    onSeekStart(event: any) {
+    onSeekStart() {
         this.seeking = true;
     }
 
     onSeekEnd(event: any) {
         if (this.seeking && this.currentPos !== event.target.value) {
-            this.audioFileService.seekTo(event.target.value);
             this.seeking = false;
+            this.currentPos = event.target.value;
+            this.audioFileService.seekTo(event.target.value * 1000);
         }
     }
 
