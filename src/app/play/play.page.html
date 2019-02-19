@@ -20,38 +20,41 @@
 
 <ion-footer *ngIf="currentIndex != -1" [@showHide]="displayFooter">
     <ion-toolbar color="primary">
-        <!-- <ion-range debounce="250" pin="true" step="5" min="0" color="light" [max]="state.durationSec" (mousedown)="seeking==true;" (ionChange)="onSeekEnd($event)" [value]="seek">
-            <ion-label color="light" slot="start">{{ state.time.trim() }}</ion-label>
-            <ion-label color="light" slot="end">{{ state.duration }}</ion-label>
-        </ion-range> -->
         <music-progress (seek)="onSeek($event)" total="{{ state.duration }}" elapsed="{{ state.time }}" max="{{state.durationSec}}" value="{{seek}}"></music-progress>
 
         <ion-grid>
-            <ion-row id="media-controls" align-items-center>
-                <ion-col size="4" align-self-center>
-                    <ion-button size="large" [disabled]="isFirstPlaying()" (click)="previous()">
-                        <ion-icon color="light" name="skip-backward"> </ion-icon>
-                    </ion-button>
+            <ion-row id="media-controls" align-items-center justify-content-center>
+                <ion-col size="4">
+                    <div text-center>
+                        <ion-button size="large" [disabled]="isFirstPlaying()" (click)="previous()">
+                            <ion-icon color="light" name="skip-backward"> </ion-icon>
+                        </ion-button>
+                    </div>
                 </ion-col>
 
-                <ion-col *ngIf="state.playing; else elseBlock" size="4" align-self-center>
-                    <ion-button size="large" (click)="pause()">
-                        <ion-icon color="light" name="pause"></ion-icon>
-                    </ion-button>
+                <ion-col *ngIf="state.playing; else elseBlock" size="4">
+                    <div text-center>
+                        <ion-button size="large" (click)="pause()">
+                            <ion-icon color="light" name="pause"></ion-icon>
+                        </ion-button>
+                    </div>
                 </ion-col>
                 <ng-template #elseBlock>
-                    <ion-col size="4" align-self-center>
-                        <ion-button size="large" (click)="play()">
-                            <ion-icon color="light" name="play"></ion-icon>
-                        </ion-button>
+                    <ion-col size="4">
+                        <div text-center>
+                            <ion-button size="large" (click)="play()">
+                                <ion-icon color="light" name="play"></ion-icon>
+                            </ion-button>
+                        </div>
                     </ion-col>
                 </ng-template>
 
-
-                <ion-col size="4" align-self-center>
-                    <ion-button size="large" [disabled]="isLastPlaying()" (click)="next()">
-                        <ion-icon name="skip-forward"></ion-icon>
-                    </ion-button>
+                <ion-col size="4">
+                    <div text-center>
+                        <ion-button size="large" [disabled]="isLastPlaying()" (click)="next()">
+                            <ion-icon name="skip-forward"></ion-icon>
+                        </ion-button>
+                    </div>
                 </ion-col>
             </ion-row>
         </ion-grid>

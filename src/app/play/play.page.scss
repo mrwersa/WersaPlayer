@@ -1,9 +1,6 @@
-app-play {
-    --knob-size: 5px;
-    ion-range {
-        ion-label {
-            min-width: 40px !important;
-            max-width: 40px !important;
-        }
+ion-footer {
+    ion-grid {
+        margin-left: 25%;
+        margin-right: 25%;
     }
 }
