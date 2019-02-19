@@ -34,7 +34,7 @@ export class PlayPage implements OnInit {
     tracks: TrackDetail[] = [];
     currentIndex = -1;
     seek = 0;
-    seeking = false;
+    currentPos = 0;
     state: any = {};
     displayFooter = 'inactive';
 
@@ -49,24 +49,35 @@ export class PlayPage implements OnInit {
             this.state = value.media;
         });
 
+        // wait for the metadata to load then show the footer
         this.store.select('mediaState')
             .pipe(pluck('media', 'loadedmetadata'), filter(value => value === true))
             .subscribe(() => {
+                // show footer (music player)
+                this.displayFooter = 'active';
+            });
+
+        // wait to get duration then show music controls
+        this.store.select('mediaState')
+            .pipe(
+                pluck('media', 'durationSec'),
+                filter(value => value !== undefined),
+                map((value: any) => Number.parseInt(value)),
+                distinctUntilChanged()
+            )
+            .subscribe((value: any) => {
                 // create a music control for locked screen
                 this.musicControls.create({
                     track: this.tracks[this.currentIndex].title,
-                    cover: this.tracks[this.currentIndex].thumbnailUrl,
+                    // cover: this.tracks[this.currentIndex].thumbnailUrl,
                     isPlaying: true,
-                    duration: this.state.duration,
+                    dismissable: true,
+                    duration: value,
                     // hide previous/next/close buttons:
                     hasPrev: !this.isFirstPlaying(),
                     hasNext: !this.isLastPlaying(),
+                    ticker: 'Now playing "' + this.tracks[this.currentIndex].title + '"'
                 });
-                // activate the music control
-                this.musicControls.listen();
-
-                // show footer (music player)
-                this.displayFooter = 'active';
             });
 
         // Updating the Seekbar based on currentTime
@@ -78,47 +89,48 @@ export class PlayPage implements OnInit {
                 distinctUntilChanged()
             )
             .subscribe((value: any) => {
-                if (!this.seeking) {
-                    this.seek = value;
-                    this.musicControls.updateElapsed(value);
-                }
+                this.seek = value;
+                this.currentPos = value;
+                this.musicControls.updateElapsed(value);
             });
 
-        let self = this;
+        // music controls callbacks
         this.musicControls.subscribe().subscribe(action => {
-            function events(action) {
-                const message = JSON.parse(action).message;
-                switch (message) {
-                    case 'music-controls-next':
-                        self.next();
-                        break;
-                    case 'music-controls-previous':
-                        self.previous();
-                        break;
-                    case 'music-controls-pause':
-                        self.pause();
-                        break;
-                    case 'music-controls-play':
-                        self.play();
-                        break;
-                    case 'music-controls-destroy':
-                        // self.reset();
-                        break;
+            const message = JSON.parse(action).message;
+            console.log(message);
+            switch (message) {
+                case 'music-controls-next':
+                    this.next();
+                    break;
+                case 'music-controls-previous':
+                    this.previous();
+                    break;
+                case 'music-controls-pause':
+                    this.pause();
+                    break;
+                case 'music-controls-play':
+                    this.play();
+                    break;
+                case 'music-controls-destroy':
+                    // self.reset();
+                    break;
 
-                    // External controls (iOS only)
-                    case 'music-controls-toggle-play-pause':
-                        break;
-                    case 'music-controls-seek-to':
-                        const seekToInSeconds = JSON.parse(action).position;
-                        this.musicControls.updateElapsed({
-                            elapsed: seekToInSeconds,
-                            isPlaying: true
-                        });
-                        self.audioFileService.seekTo(seekToInSeconds);
-                        break;
-                }
+                // External controls (iOS only)
+                case 'music-controls-toggle-play-pause':
+                    break;
+                case 'music-controls-seek-to':
+                    const seekToInSeconds = JSON.parse(action).position;
+                    this.musicControls.updateElapsed({
+                        elapsed: seekToInSeconds,
+                        isPlaying: true
+                    });
+                    this.audioFileService.seekTo(seekToInSeconds);
+                    break;
             }
         });
+
+        // activate the music control
+        this.musicControls.listen();
     }
 
     openTrack(index) {
@@ -156,14 +168,9 @@ export class PlayPage implements OnInit {
         return this.currentIndex === this.tracks.length - 1;
     }
 
-    onSeekStart() {
-        this.seeking = true;
-    }
-
-    onSeekEnd(event: any) {
-        if (this.seeking) {
+    onSeek(event: any) {
+        if (this.currentPos !== event.target.value) {
             this.audioFileService.seekTo(event.target.value);
-            this.seeking = false;
         }
     }
 

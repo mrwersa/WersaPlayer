@@ -115,11 +115,7 @@ export class AudioFileService {
 
     public seekTo(position) {
         if (this.mediaObject) {
-            this.mediaObject.pause();
             this.mediaObject.seekTo(position);
-            this.mediaObject.play({
-                playAudioWhenScreenIsLocked: true
-            });
         }
     }
 
