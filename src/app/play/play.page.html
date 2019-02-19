@@ -6,11 +6,11 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
     <ion-list *ngIf="tracks.length">
         <ng-container *ngFor="let track of tracks; let i = index">
-            <ion-item text-wrap (click)="openTrack(i)">
-                <ion-icon color="primary" item-start name="musical-notes"></ion-icon>{{ track.title }}
+            <ion-item [color]="currentIndex === i ? 'primary':'light'" text-wrap (click)="openTrack(i)">
+                <ion-icon [color]="currentIndex !== i ? 'primary':'light'" item-start name="musical-notes"></ion-icon>{{ track.title }}
                 <ion-icon *ngIf="currentIndex === i" slot="end" name="musical-note"></ion-icon>
                 <ion-icon *ngIf="currentIndex !== i" slot="end" name="play"></ion-icon>
             </ion-item>
