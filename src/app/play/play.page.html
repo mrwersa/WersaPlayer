@@ -7,7 +7,6 @@
 </ion-header>
 
 <ion-content padding>
-
     <ion-list *ngIf="tracks.length">
         <ng-container *ngFor="let track of tracks; let i = index">
             <ion-item text-wrap (click)="openTrack(i)">
@@ -17,18 +16,15 @@
             </ion-item>
         </ng-container>
     </ion-list>
-
 </ion-content>
 
-
-
 <ion-footer *ngIf="currentIndex != -1" [@showHide]="displayFooter">
-
     <ion-toolbar color="primary">
-        <ion-range debounce="250" pin="true" step="5" min="0" color="light" [max]="state.durationSec" (mousedown)="seeking==true;" (ionChange)="onSeekEnd($event)" [value]="seek">
+        <!-- <ion-range debounce="250" pin="true" step="5" min="0" color="light" [max]="state.durationSec" (mousedown)="seeking==true;" (ionChange)="onSeekEnd($event)" [value]="seek">
             <ion-label color="light" slot="start">{{ state.time.trim() }}</ion-label>
             <ion-label color="light" slot="end">{{ state.duration }}</ion-label>
-        </ion-range>
+        </ion-range> -->
+        <music-progress (seek)="onSeek($event)" total="{{ state.duration }}" elapsed="{{ state.time }}" max="{{state.durationSec}}" value="{{seek}}"></music-progress>
     </ion-toolbar>
 
     <ion-toolbar color="primary" padding>

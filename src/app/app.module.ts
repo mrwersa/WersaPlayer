@@ -24,6 +24,8 @@ import { mediaStateReducer } from './services/store.provider';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { MaterialModule } from './material.module';
+
 @NgModule({
     declarations: [
         AppComponent
@@ -37,7 +39,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         StoreModule.forRoot({
             mediaState: mediaStateReducer
         }),
-        IonicStorageModule.forRoot()
+        IonicStorageModule.forRoot(),
+        MaterialModule
     ],
     providers: [
         StatusBar,

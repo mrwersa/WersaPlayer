@@ -34,8 +34,6 @@ export class PlayPage implements OnInit {
     tracks: TrackDetail[] = [];
     currentIndex = -1;
     seek = 0;
-    currentPos = 0;
-    seeking = false;
     state: any = {};
     displayFooter = 'inactive';
 
@@ -91,11 +89,8 @@ export class PlayPage implements OnInit {
                 distinctUntilChanged()
             )
             .subscribe((value: any) => {
-                if (!this.seeking) {
-                    this.seek = value;
-                    this.currentPos = value;
-                    this.musicControls.updateElapsed(value);
-                }
+                this.seek = value;
+                this.musicControls.updateElapsed(value);
             });
 
         // music controls callbacks
@@ -173,16 +168,8 @@ export class PlayPage implements OnInit {
         return this.currentIndex === this.tracks.length - 1;
     }
 
-    onSeekStart() {
-        this.seeking = true;
-    }
-
-    onSeekEnd(event: any) {
-        if (this.seeking && this.currentPos !== event.target.value) {
-            this.seeking = false;
-            this.currentPos = event.target.value;
-            this.audioFileService.seekTo(event.target.value * 1000);
-        }
+    onSeek(event: any) {
+        this.audioFileService.seekTo(event * 1000);
     }
 
     reset() {
