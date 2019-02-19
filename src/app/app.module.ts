@@ -8,6 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { MusicControls } from '@ionic-native/music-controls/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -48,6 +49,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         HTTP,
         Media,
         BackgroundMode,
+        MusicControls,
         FileTransferObject,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],

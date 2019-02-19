@@ -5,6 +5,7 @@ import { File } from '@ionic-native/file';
 import { Subject } from 'rxjs';
 import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { Store } from '@ngrx/store';
+import { MusicControls } from '@ionic-native/music-controls/ngx';
 
 import { LOADEDMETADATA, PLAYING, TIMEUPDATE, RESET } from './store.provider';
 import { environment } from '../../environments/environment';
@@ -22,6 +23,7 @@ export class AudioFileService {
     private mediaObject: MediaObject;
 
     constructor(private storage: Storage, private transfer: FileTransfer, private media: Media, private store: Store<any>) {
+
         this.storage.forEach((value, key, index) => {
             this.tracks.next(value);
         });
@@ -112,7 +114,13 @@ export class AudioFileService {
     }
 
     public seekTo(position) {
-        this.mediaObject.seekTo(position);
+        if (this.mediaObject) {
+            this.mediaObject.pause();
+            this.mediaObject.seekTo(position);
+            this.mediaObject.play({
+                playAudioWhenScreenIsLocked: true
+            });
+        }
     }
 
     public resetTrack() {
