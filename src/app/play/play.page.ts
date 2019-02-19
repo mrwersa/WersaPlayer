@@ -78,6 +78,8 @@ export class PlayPage implements OnInit {
                     hasNext: !this.isLastPlaying(),
                     ticker: 'Now playing "' + this.tracks[this.currentIndex].title + '"'
                 });
+                // activate the music control
+                this.musicControls.listen();
             });
 
         // Updating the Seekbar based on currentTime
@@ -128,9 +130,6 @@ export class PlayPage implements OnInit {
                     break;
             }
         });
-
-        // activate the music control
-        this.musicControls.listen();
     }
 
     openTrack(index) {
