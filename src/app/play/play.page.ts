@@ -35,6 +35,7 @@ export class PlayPage implements OnInit {
     currentIndex = -1;
     seek = 0;
     currentPos = 0;
+    seeking = false;
     state: any = {};
     displayFooter = 'inactive';
 
@@ -78,8 +79,7 @@ export class PlayPage implements OnInit {
                     hasNext: !this.isLastPlaying(),
                     ticker: 'Now playing "' + this.tracks[this.currentIndex].title + '"'
                 });
-                // activate the music control
-                this.musicControls.listen();
+
             });
 
         // Updating the Seekbar based on currentTime
@@ -91,13 +91,16 @@ export class PlayPage implements OnInit {
                 distinctUntilChanged()
             )
             .subscribe((value: any) => {
-                this.seek = value;
-                this.currentPos = value;
-                this.musicControls.updateElapsed(value);
+                if (!this.seeking) {
+                    this.seek = value;
+                    this.currentPos = value;
+                    this.musicControls.updateElapsed(value);
+                }
             });
 
         // music controls callbacks
         this.musicControls.subscribe().subscribe(action => {
+            console.log('asdasdasdasdasdasdasdasdas');
             const message = JSON.parse(action).message;
             console.log(message);
             switch (message) {
@@ -130,6 +133,9 @@ export class PlayPage implements OnInit {
                     break;
             }
         });
+
+        // activate the music control
+        this.musicControls.listen();
     }
 
     openTrack(index) {
@@ -167,9 +173,14 @@ export class PlayPage implements OnInit {
         return this.currentIndex === this.tracks.length - 1;
     }
 
-    onSeek(event: any) {
-        if (this.currentPos !== event.target.value) {
+    onSeekStart(event: any) {
+        this.seeking = true;
+    }
+
+    onSeekEnd(event: any) {
+        if (this.seeking && this.currentPos !== event.target.value) {
             this.audioFileService.seekTo(event.target.value);
+            this.seeking = false;
         }
     }
 

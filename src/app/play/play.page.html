@@ -25,7 +25,7 @@
 <ion-footer *ngIf="currentIndex != -1" [@showHide]="displayFooter">
 
     <ion-toolbar color="primary">
-        <ion-range pin="true" step="5" min="0" color="light" [max]="state.durationSec" (ionChange)="onSeek($event)" [value]="seek">
+        <ion-range debounce="300" pin="true" step="5" min="0" color="light" [max]="state.durationSec" (ionFocus)="onSeekStart()" (ionChange)="onSeekEnd($event)" [value]="seek">
             <ion-label color="light" slot="start">{{ state.time.trim() }}</ion-label>
             <ion-label color="light" slot="end">{{ state.duration }}</ion-label>
         </ion-range>
