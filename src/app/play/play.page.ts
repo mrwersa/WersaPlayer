@@ -89,7 +89,7 @@ export class PlayPage implements OnInit {
             .subscribe(() => {
                 // show footer (music player)
                 this.displayFooter = 'active';
-                //create media controls
+                // create media controls
                 this.createMediaControls(this.tracks[this.currentIndex], this.state.durationSec);
             });
 
