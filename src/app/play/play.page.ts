@@ -89,20 +89,22 @@ export class PlayPage implements OnInit {
             .subscribe(() => {
                 // show footer (music player)
                 this.displayFooter = 'active';
+                //create media controls
+                this.createMediaControls(this.tracks[this.currentIndex], this.state.durationSec);
             });
 
         // wait to get duration then show music controls
         this.store
             .select('mediaState')
             .pipe(
-                pluck('media', 'durationSec'),
+                pluck('media', 'playing'),
                 filter(value => value !== undefined),
-                map((value: any) => Number.parseInt(value)),
                 distinctUntilChanged()
             )
             .subscribe((value: any) => {
-                this.createMediaControls(this.tracks[this.currentIndex], value);
+                this.musicControls.updateIsPlaying(value);
             });
+
 
         // Updating the Seekbar based on currentTime
         this.store
@@ -200,15 +202,12 @@ export class PlayPage implements OnInit {
                     this.previous();
                     break;
                 case 'music-controls-pause':
-                    this.musicControls.updateIsPlaying(false);
                     this.pause();
                     break;
                 case 'music-controls-play':
-                    this.musicControls.updateIsPlaying(true);
                     this.play();
                     break;
                 case 'music-controls-toggle-play-pause':
-                    this.musicControls.updateIsPlaying(this.state.playing);
                     break;
                 case 'music-controls-seek-to':
                     console.log('seek toooooo');

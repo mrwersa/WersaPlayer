@@ -17,8 +17,8 @@ export function mediaStateReducer(state: any, action: MediaAction) {
         case LOADEDMETADATA:
             state = Object.assign({}, state);
             state.media.loadedmetadata = payload.value;
-            state.media.duration = payload.data.time;
-            state.media.durationSec = payload.data.timeSec;
+            state.media.duration = payload.data.duration;
+            state.media.durationSec = payload.data.durationSec;
             state.media.mediaType = payload.data.mediaType;
             return state;
         case PLAYING:
