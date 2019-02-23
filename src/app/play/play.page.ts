@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
 import { Store } from '@ngrx/store';
 
 import { AudioFileService } from '../services/audio-file.service';
@@ -36,7 +42,7 @@ export class PlayPage implements OnInit {
     seek = 0;
     state: any = {};
     displayFooter = 'inactive';
-    searchTerm: string = '';
+    searchTerm: String = '';
 
     constructor(
         private musicControls: MusicControls,
@@ -46,21 +52,27 @@ export class PlayPage implements OnInit {
 
     ngOnInit() {
         // track listener
-        this.audioFileService.tracks.pipe(
-            filter((track: TrackDetail) => track.title.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1)
-        ).subscribe((track: TrackDetail) => {
-            this.tracks.push(track);
-        });
+        this.audioFileService.tracks
+            .pipe(
+                filter(
+                    (track: TrackDetail) =>
+                        track.title.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1))
+            .subscribe((track: TrackDetail) => {
+                this.checkAndAddTrack(track);
+            });
 
         this.store.select('mediaState').subscribe((value: any) => {
             this.state = value.media;
         });
 
         // stopped => next track
-        this.store.select('mediaState')
-            .pipe(pluck('media', 'stopped'),
+        this.store
+            .select('mediaState')
+            .pipe(
+                pluck('media', 'stopped'),
                 filter(value => value !== undefined),
-                distinctUntilChanged())
+                distinctUntilChanged()
+            )
             .subscribe((value: any) => {
                 if (value) {
                     this.next();
@@ -68,15 +80,20 @@ export class PlayPage implements OnInit {
             });
 
         // wait for the metadata to load then show the footer
-        this.store.select('mediaState')
-            .pipe(pluck('media', 'loadedmetadata'), filter(value => value === true))
+        this.store
+            .select('mediaState')
+            .pipe(
+                pluck('media', 'loadedmetadata'),
+                filter(value => value === true)
+            )
             .subscribe(() => {
                 // show footer (music player)
                 this.displayFooter = 'active';
             });
 
         // wait to get duration then show music controls
-        this.store.select('mediaState')
+        this.store
+            .select('mediaState')
             .pipe(
                 pluck('media', 'durationSec'),
                 filter(value => value !== undefined),
@@ -84,23 +101,12 @@ export class PlayPage implements OnInit {
                 distinctUntilChanged()
             )
             .subscribe((value: any) => {
-                // create a music control for locked screen
-                this.musicControls.create({
-                    track: this.tracks[this.currentIndex].title,
-                    // cover: this.tracks[this.currentIndex].thumbnailUrl,
-                    isPlaying: true,
-                    dismissable: true,
-                    duration: value,
-                    // hide previous/next/close buttons:
-                    hasPrev: !this.isFirstPlaying(),
-                    hasNext: !this.isLastPlaying(),
-                    ticker: 'Now playing "' + this.tracks[this.currentIndex].title + '"'
-                });
-
+                this.createMediaControls(this.tracks[this.currentIndex], value);
             });
 
         // Updating the Seekbar based on currentTime
-        this.store.select('mediaState')
+        this.store
+            .select('mediaState')
             .pipe(
                 pluck('media', 'timeSec'),
                 filter(value => value !== undefined),
@@ -109,41 +115,11 @@ export class PlayPage implements OnInit {
             )
             .subscribe((value: any) => {
                 this.seek = value;
-                this.musicControls.updateElapsed(value);
+                this.musicControls.updateElapsed({
+                    elapsed: value,
+                    isPlaying: this.state.playing
+                });
             });
-
-        // music controls callbacks
-        this.musicControls.subscribe().subscribe(action => {
-            const message = JSON.parse(action).message;
-            console.log(message);
-            switch (message) {
-                case 'music-controls-next':
-                    this.next();
-                    break;
-                case 'music-controls-previous':
-                    this.previous();
-                    break;
-                case 'music-controls-pause':
-                    this.pause();
-                    break;
-                case 'music-controls-play':
-                    this.play();
-                    break;
-
-                // External controls (iOS only)
-                case 'music-controls-seek-to':
-                    const seekToInSeconds = JSON.parse(action).position;
-                    this.musicControls.updateElapsed({
-                        elapsed: seekToInSeconds,
-                        isPlaying: true
-                    });
-                    this.audioFileService.seekTo(seekToInSeconds);
-                    break;
-            }
-        });
-
-        // activate the music control
-        this.musicControls.listen();
     }
 
     openTrack(index) {
@@ -189,5 +165,69 @@ export class PlayPage implements OnInit {
 
     onSeek(event: any) {
         this.audioFileService.seekTo(event * 1000);
+    }
+
+    checkAndAddTrack(track: TrackDetail) {
+        let found = this.tracks.some(function(t) {
+            return t.id === track.id;
+        });
+        if (!found) { this.tracks.push(track); }
+    }
+
+    createMediaControls(track: TrackDetail, duration) {
+        // create a music control for locked screen
+        this.musicControls.create({
+            track: track.title,
+            // cover: this.tracks[this.currentIndex].thumbnailUrl,
+            isPlaying: this.state.playing,
+            dismissable: true,
+            duration: duration,
+            hasScrubbing: true,
+            hasPrev: true,
+            hasNext: true,
+            ticker: 'Now playing "' + track.title + '"'
+        });
+
+        // music controls callbacks
+        this.musicControls.subscribe().subscribe(action => {
+            const message = JSON.parse(action).message;
+            console.log(message);
+            switch (message) {
+                case 'music-controls-next':
+                    this.next();
+                    break;
+                case 'music-controls-previous':
+                    this.previous();
+                    break;
+                case 'music-controls-pause':
+                    this.musicControls.updateIsPlaying(false);
+                    this.pause();
+                    break;
+                case 'music-controls-play':
+                    this.musicControls.updateIsPlaying(true);
+                    this.play();
+                    break;
+                case 'music-controls-toggle-play-pause':
+                    this.musicControls.updateIsPlaying(this.state.playing);
+                    break;
+                case 'music-controls-seek-to':
+                    console.log('seek toooooo');
+                    console.log(action);
+                    const seekToInSeconds = JSON.parse(action).position;
+                    console.log(seekToInSeconds);
+                    this.musicControls.updateElapsed({
+                        elapsed: seekToInSeconds,
+                        isPlaying: this.state.playing
+                    });
+                    this.audioFileService.seekTo(seekToInSeconds);
+                    break;
+                case 'music-controls-headset-unplugged':
+                    this.pause();
+                    break;
+            }
+        });
+
+        // activate the music control
+        this.musicControls.listen();
     }
 }

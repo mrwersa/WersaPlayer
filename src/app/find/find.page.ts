@@ -3,15 +3,15 @@ import { VideoDetail } from '../models/video-detail.model';
 
 
 @Component({
-  selector: 'app-find',
-  templateUrl: 'find.page.html',
-  styleUrls: ['find.page.scss']
+    selector: 'app-find',
+    templateUrl: 'find.page.html',
+    styleUrls: ['find.page.scss']
 })
 export class FindPage {
-  results: VideoDetail[];
-  message = '';
+    results: VideoDetail[];
+    message = '';
 
-  updateResults(results: VideoDetail[]): void {
-    this.results = results;
-  }
+    updateResults(results: VideoDetail[]): void {
+        this.results = results;
+    }
 }
