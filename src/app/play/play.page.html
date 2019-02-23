@@ -7,6 +7,8 @@
 </ion-header>
 
 <ion-content>
+    <ion-searchbar [(ngModel)]="searchTerm"></ion-searchbar>
+
     <ion-list *ngIf="tracks.length">
         <ng-container *ngFor="let track of tracks; let i = index">
             <ion-item [color]="currentIndex === i ? 'primary':'light'" text-wrap (click)="openTrack(i)">
@@ -22,6 +24,6 @@
     <ion-toolbar color="primary">
         <music-progress (seek)="onSeek($event)" total="{{ state.duration }}" elapsed="{{ state.time }}" max="{{state.durationSec}}" value="{{seek}}"></music-progress>
 
-        <music-controls [isPlaying]="state.playing" [hasNext]="!isLastPlaying()" [hasPrev]="!isFirstPlaying()" (play)="play()" (pause)="pause()" (previous)="previous()" (next)="next()"></music-controls>
+        <music-controls [isPlaying]="state.playing" hasNext="true" hasPrev="true" (play)="play()" (pause)="pause()" (previous)="previous()" (next)="next()"></music-controls>
     </ion-toolbar>
 </ion-footer>

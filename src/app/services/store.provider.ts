@@ -8,6 +8,7 @@ export interface MediaAction extends Action {
 export const LOADEDMETADATA = 'LOADEDMETADATA';
 export const PLAYING = 'PLAYING';
 export const TIMEUPDATE = 'TIMEUPDATE';
+export const STOPPED = 'STOPPED';
 export const RESET = 'RESET';
 
 export function mediaStateReducer(state: any, action: MediaAction) {
@@ -28,6 +29,10 @@ export function mediaStateReducer(state: any, action: MediaAction) {
             state = Object.assign({}, state);
             state.media.time = payload.time;
             state.media.timeSec = payload.timeSec;
+            return state;
+        case STOPPED:
+            state = Object.assign({}, state);
+            state.media.stopped = true;
             return state;
         case RESET:
             state = Object.assign({}, state);

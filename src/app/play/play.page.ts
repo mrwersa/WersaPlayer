@@ -36,6 +36,7 @@ export class PlayPage implements OnInit {
     seek = 0;
     state: any = {};
     displayFooter = 'inactive';
+    searchTerm: string = '';
 
     constructor(
         private musicControls: MusicControls,
@@ -45,13 +46,26 @@ export class PlayPage implements OnInit {
 
     ngOnInit() {
         // track listener
-        this.audioFileService.tracks.subscribe((track: TrackDetail) => {
+        this.audioFileService.tracks.pipe(
+            filter((track: TrackDetail) => track.title.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1)
+        ).subscribe((track: TrackDetail) => {
             this.tracks.push(track);
         });
 
         this.store.select('mediaState').subscribe((value: any) => {
             this.state = value.media;
         });
+
+        // stopped => next track
+        this.store.select('mediaState')
+            .pipe(pluck('media', 'stopped'),
+                filter(value => value !== undefined),
+                distinctUntilChanged())
+            .subscribe((value: any) => {
+                if (value) {
+                    this.next();
+                }
+            });
 
         // wait for the metadata to load then show the footer
         this.store.select('mediaState')
@@ -136,6 +150,8 @@ export class PlayPage implements OnInit {
         this.currentIndex = index;
         if (index >= 0 && index < this.tracks.length) {
             this.audioFileService.openTrack(this.tracks[index]);
+        } else {
+            this.currentIndex = -1;
         }
     }
 
@@ -148,11 +164,19 @@ export class PlayPage implements OnInit {
     }
 
     next() {
-        this.openTrack(this.currentIndex + 1);
+        if (this.isLastPlaying()) {
+            this.openTrack(0);
+        } else {
+            this.openTrack(this.currentIndex + 1);
+        }
     }
 
     previous() {
-        this.openTrack(this.currentIndex - 1);
+        if (this.isFirstPlaying()) {
+            this.openTrack(this.tracks.length - 1);
+        } else {
+            this.openTrack(this.currentIndex - 1);
+        }
     }
 
     isFirstPlaying() {

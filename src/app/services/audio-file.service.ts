@@ -3,11 +3,10 @@ import { Storage } from '@ionic/storage';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file';
 import { Subject } from 'rxjs';
-import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { Media, MediaObject, MEDIA_STATUS } from '@ionic-native/media/ngx';
 import { Store } from '@ngrx/store';
-import { MusicControls } from '@ionic-native/music-controls/ngx';
 
-import { LOADEDMETADATA, PLAYING, TIMEUPDATE, RESET } from './store.provider';
+import { LOADEDMETADATA, PLAYING, TIMEUPDATE, STOPPED, RESET } from './store.provider';
 import { environment } from '../../environments/environment';
 import { TrackDetail } from '../models/track-detail.model';
 
@@ -19,7 +18,7 @@ import * as moment from 'moment';
 })
 export class AudioFileService {
     tracks: Subject<TrackDetail> = new Subject<TrackDetail>();
-    progress: Subject<number> = new Subject<number>();
+    status: Subject<MEDIA_STATUS> = new Subject<MEDIA_STATUS>();
     private mediaObject: MediaObject;
 
     constructor(private storage: Storage, private transfer: FileTransfer, private media: Media, private store: Store<any>) {
@@ -87,6 +86,7 @@ export class AudioFileService {
         const path = File.dataDirectory.replace(/^file:\/\//, '') + track.id + '.mp3';
         this.mediaObject = this.media.create(path);
 
+        this.subscribeToMediaStatus();
         this.playTrack();
         this.loadMetadata();
     }
@@ -107,21 +107,14 @@ export class AudioFileService {
         }
     }
 
-    public stopTrack() {
-        if (this.mediaObject) {
-            this.mediaObject.stop();
-        }
-    }
-
     public seekTo(position) {
         if (this.mediaObject) {
             this.mediaObject.seekTo(position);
         }
     }
 
-    public resetTrack() {
+    private resetTrack() {
         if (this.mediaObject) {
-            this.mediaObject.stop();
             this.mediaObject.release();
             this.store.dispatch({ type: RESET });
         }
@@ -129,6 +122,18 @@ export class AudioFileService {
 
     private formatTime(time, format) {
         return moment.utc(time).format(format);
+    }
+
+    private subscribeToMediaStatus() {
+        if (!this.mediaObject) {
+            return;
+        }
+
+        this.mediaObject.onStatusUpdate.subscribe(status => {
+            if (status === MEDIA_STATUS.STOPPED) {
+                this.store.dispatch({ type: STOPPED });
+            }
+        });
     }
 
     private loadMetadata() {
