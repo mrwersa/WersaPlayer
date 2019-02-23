@@ -219,7 +219,7 @@ export class PlayPage implements OnInit {
                         elapsed: seekToInSeconds,
                         isPlaying: this.state.playing
                     });
-                    this.audioFileService.seekTo(seekToInSeconds);
+                    this.audioFileService.seekTo(seekToInSeconds * 1000);
                     break;
                 case 'music-controls-headset-unplugged':
                     this.pause();
