@@ -84,26 +84,17 @@ export class PlayPage implements OnInit {
             .select('mediaState')
             .pipe(
                 pluck('media', 'loadedmetadata'),
-                filter(value => value === true)
-            )
-            .subscribe(() => {
-                // show footer (music player)
-                this.displayFooter = 'active';
-                // create media controls
-                this.createMediaControls(this.tracks[this.currentIndex], this.state.durationSec);
-            });
-
-        // wait to get duration then show music controls
-        this.store
-            .select('mediaState')
-            .pipe(
-                pluck('media', 'playing'),
-                filter(value => value !== undefined),
                 distinctUntilChanged()
             )
             .subscribe((value: any) => {
-                this.musicControls.updateIsPlaying(value);
+                if (value) {
+                    // show footer (music player)
+                    this.displayFooter = 'active';
+                    // create media controls
+                    this.createMediaControls(this.tracks[this.currentIndex], this.state.durationSec);
+                }
             });
+
 
 
         // Updating the Seekbar based on currentTime
@@ -119,7 +110,7 @@ export class PlayPage implements OnInit {
                 this.seek = value;
                 this.musicControls.updateElapsed({
                     elapsed: value,
-                    isPlaying: this.state.playing
+                    isPlaying: true
                 });
             });
     }
@@ -181,8 +172,7 @@ export class PlayPage implements OnInit {
         this.musicControls.create({
             track: track.title,
             // cover: this.tracks[this.currentIndex].thumbnailUrl,
-            isPlaying: this.state.playing,
-            dismissable: true,
+            isPlaying: true,
             duration: duration,
             hasScrubbing: true,
             hasPrev: true,
@@ -207,17 +197,8 @@ export class PlayPage implements OnInit {
                 case 'music-controls-play':
                     this.play();
                     break;
-                case 'music-controls-toggle-play-pause':
-                    break;
                 case 'music-controls-seek-to':
-                    console.log('seek toooooo');
-                    console.log(action);
                     const seekToInSeconds = JSON.parse(action).position;
-                    console.log(seekToInSeconds);
-                    this.musicControls.updateElapsed({
-                        elapsed: seekToInSeconds,
-                        isPlaying: this.state.playing
-                    });
                     this.audioFileService.seekTo(seekToInSeconds * 1000);
                     break;
                 case 'music-controls-headset-unplugged':
@@ -228,5 +209,9 @@ export class PlayPage implements OnInit {
 
         // activate the music control
         this.musicControls.listen();
+    }
+
+    destroyMediaControls() {
+        this.musicControls.destroy();
     }
 }
