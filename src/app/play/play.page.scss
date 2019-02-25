@@ -1,13 +1,13 @@
-ion-footer {
-    ion-grid {
-        margin-left: 25%;
-        margin-right: 25%;
+app-play {
+    ion-footer {
+        ion-grid {
+            margin-left: 25%;
+            margin-right: 25%;
+        }
     }
+    .track-thumbnail {
+        border-radius: 15% !important;
+        overflow: hidden;
+    }
+    --highlight-height:2px;
 }
-
-.track-thumbnail {
-    border-radius: 15% !important;
-    overflow: hidden;
-}
-
-$--highlight-height:2px;
