@@ -156,8 +156,8 @@ export class PlayPage implements OnInit {
         return this.currentIndex === this.tracks.length - 1;
     }
 
-    onSeek(event: any) {
-        this.audioFileService.seekTo(event * 1000);
+    onSeek(value: any) {
+        this.audioFileService.seekTo(value * 1000);
     }
 
     checkAndAddTrack(track: TrackDetail) {
@@ -171,7 +171,7 @@ export class PlayPage implements OnInit {
         // create a music control for locked screen
         this.musicControls.create({
             track: track.title,
-            // cover: this.tracks[this.currentIndex].thumbnailUrl,
+            cover: this.tracks[this.currentIndex].thumbnailUrl,
             isPlaying: true,
             duration: duration,
             hasScrubbing: true,

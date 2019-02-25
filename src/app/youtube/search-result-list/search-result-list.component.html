@@ -1,8 +1,10 @@
 <ion-list>
-  <app-search-result *ngFor="let result of results" [result]="result"></app-search-result>
+    <app-search-result *ngFor="let result of results" [result]="result"></app-search-result>
 </ion-list>
 
-<ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreResults($event)">
-  <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more results...">
-  </ion-infinite-scroll-content>
-</ion-infinite-scroll>
+<ng-template [ngIf]="nextPageToken">
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreResults($event)">
+        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more results...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+</ng-template>

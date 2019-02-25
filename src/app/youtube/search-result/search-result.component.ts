@@ -54,12 +54,7 @@ export class SearchResultComponent implements OnInit {
             console.log(msg.data.data.thumbnails);
             if (this.result && msg.data.id === this.result.id) {
                 if (msg.type === 'download-finished') {
-                    this.audioFileService.addTrack(new TrackDetail({
-                        id: msg.data.id,
-                        title: msg.data.data.title,
-                        description: msg.data.data.description,
-                        thumbnailUrl: msg.data.data.thumbnailUrl
-                    })).then(
+                    this.audioFileService.addTrack(new TrackDetail(this.result)).then(
                         () => { // success
                             this.status = DownloadStatus.Downloaded;
                         },

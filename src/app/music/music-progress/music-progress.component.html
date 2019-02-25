@@ -1,20 +1,20 @@
-<ion-grid>
-    <ion-row align-items-center justify-content-center>
-        <ion-col size="2">
+<ion-grid no-padding>
+    <ion-row align-items-stretch justify-content-center>
+        <ion-col size="12">
             <div text-center>
-                <ion-label>{{elapsed}}</ion-label>
+                <mat-slider value="{{_value}}" min="0" max="{{max}}" (input)="onSliderChange($event)" (change)="onInputChange($event)"></mat-slider>
             </div>
         </ion-col>
-
-        <ion-col size="8">
-            <div text-center>
-                <mat-slider thumbLabel [displayWith]="formatLabel" value="{{value}}" min="0" max="{{max}}" (input)="onInputChange($event)"></mat-slider>
+    </ion-row>
+    <ion-row align-items-stretch>
+        <ion-col>
+            <div text-left>
+                <ion-label no-padding>{{elapsed}}</ion-label>
             </div>
         </ion-col>
-
-        <ion-col size="2">
-            <div text-center>
-                <ion-label class="player__time-total">{{total}}</ion-label>
+        <ion-col>
+            <div text-right>
+                <ion-label no-padding>{{total}}</ion-label>
             </div>
         </ion-col>
     </ion-row>

@@ -5,6 +5,7 @@ export class VideoDetail {
     thumbnailUrl: string;
     videoUrl: string;
     nextPageToken: string;
+    query: string;
 
     constructor(obj?: any) {
         this.id = obj && obj.id || null;
@@ -13,5 +14,6 @@ export class VideoDetail {
         this.thumbnailUrl = obj && obj.thumbnailUrl || null;
         this.videoUrl = obj && obj.videoUrl || `https://www.youtube.com/watch?v=${this.id}`;
         this.nextPageToken = obj && obj.nextPageToken || null;
+        this.query = obj && obj.query || null;
     }
 }
