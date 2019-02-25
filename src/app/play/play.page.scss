@@ -1,15 +1,10 @@
-app-play {
-    ion-footer {
-        ion-grid {
-            margin-left: 25%;
-            margin-right: 25%;
-        }
-    }
-    .track-thumbnail {
-        border-radius: 15% !important;
-        overflow: hidden;
-    }
-    .selected {
+.track-thumbnail {
+    border-radius: 15% !important;
+    overflow: hidden;
+}
+
+.selected {
+    .item-complex .item-content {
         background-color: lightslategray !important;
     }
 }

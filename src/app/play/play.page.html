@@ -9,13 +9,13 @@
 <ion-content>
     <ion-searchbar [(ngModel)]="searchTerm"></ion-searchbar>
 
-    <ion-list *ngIf="tracks.length">
+    <ion-list *ngIf="tracks.length" lines="inset">
         <ng-container *ngFor="let track of tracks; let i = index">
             <ion-item text-wrap (click)="openTrack(i)" [class.selected]="i === currentIndex">
                 <ion-thumbnail>
                     <img class="track-thumbnail" [src]="tracks[i].thumbnailUrl">
                 </ion-thumbnail>
-                <ion-label padding>
+                <ion-label>
                     <h2>{{ track.title }}</h2>
                 </ion-label>
             </ion-item>
