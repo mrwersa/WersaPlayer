@@ -9,5 +9,7 @@ app-play {
         border-radius: 15% !important;
         overflow: hidden;
     }
-    --highlight-height:2px;
+    .selected {
+        background-color: lightslategray !important;
+    }
 }

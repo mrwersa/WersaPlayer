@@ -11,7 +11,7 @@
 
     <ion-list *ngIf="tracks.length">
         <ng-container *ngFor="let track of tracks; let i = index">
-            <ion-item text-wrap (click)="openTrack(i)">
+            <ion-item text-wrap (click)="openTrack(i)" [class.selected]="i === currentIndex">
                 <ion-thumbnail>
                     <img class="track-thumbnail" [src]="tracks[i].thumbnailUrl">
                 </ion-thumbnail>
